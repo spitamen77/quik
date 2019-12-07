@@ -83,7 +83,7 @@ class EmployeController extends Controller
         $mail = Employees::where('login',$request->login)->first();
         if (isset($mail)) return response()->json([
             'code' => 1,
-            'message' => 'Такой телефон уже зарегистрирован'
+            'message' => trans('lang.error_phone')
         ]);
 
         $user = new Employees();
@@ -94,7 +94,7 @@ class EmployeController extends Controller
 
         return response()->json([
             'code' => 0,
-            'message' => 'Аккаунт успешно создан.'
+            'message' => trans('lang.account')
         ], 201);
     }
 
