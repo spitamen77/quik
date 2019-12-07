@@ -30,9 +30,9 @@ Route::group([
 Route::group([
     'prefix' => 'employees'
 ], function () {
-    Route::post('login', 'Api\EmployeController@login');
+    Route::post('login', 'Api\EmployeController@login')->middleware('localization');
     Route::post('registration', 'Api\EmployeController@registration');
-    Route::post('logout', 'Api\EmployeController@logout');
+    Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
     Route::post('update', 'Api\EmployeController@update');
     Route::post('password-change', 'Api\EmployeController@passwordChange');
     Route::post('password-old', 'Api\EmployeController@passwordOld');

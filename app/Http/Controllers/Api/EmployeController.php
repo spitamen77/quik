@@ -66,7 +66,7 @@ class EmployeController extends Controller
             [
                 'user'=>$body,
                 'code' => 0,
-                'message' => 'Success'
+                'message' => trans('lang.success')
             ]);
 
 //        return $this->respondWithToken($token);
@@ -206,7 +206,7 @@ class EmployeController extends Controller
         auth()->logout();
         return response()->json([
             'code' => 0,
-            'message' => 'Успешно вышли'
+            'message' => trans('lang.logout')
         ]);
 //        return response()->json(['message' => 'Successfully logged out']);
     }
