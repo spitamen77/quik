@@ -30,7 +30,7 @@ Route::group([
 Route::group([
     'prefix' => 'employees'
 ], function () {
-    Route::post('login', 'Api\EmployeController@login')->middleware('cors');
+    Route::post('login', 'Api\EmployeController@login')->middleware('localization');
     Route::post('registration', 'Api\EmployeController@registration')->middleware('localization');
     Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
     Route::post('update', 'Api\EmployeController@update');
