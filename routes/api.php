@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 
+header('Access-Control-Allow-Origin: http://api.tayyora.uz');
 /*
 |--------------------------------------------------------------------------
 | API Routes
