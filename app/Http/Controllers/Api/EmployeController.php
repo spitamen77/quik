@@ -186,6 +186,17 @@ class EmployeController extends Controller
                     'user' => (object)[]
                 ]);
             }
+        }else {
+            $user = Employees::select('id', 'name','login','role','created_at')
+                ->where('id',Auth::user()->id)->first();
+            $date = $user->created_at;
+            unset($user->created_at);
+            $user->reg_date = strtotime($date);
+
+            return response()->json([
+                'code' => 0,
+                'user' => $user
+            ]);
         }
     }
 
