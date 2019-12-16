@@ -27,16 +27,34 @@ Route::group([
     Route::post('me', 'Api\AuthController@me');
 });
 
+//Route::group([
+//    'prefix' => 'employees'
+//], function () {
+//    Route::post('login', 'Api\EmployeController@login')->middleware('localization');
+//    Route::post('create', 'Api\EmployeController@registration')->middleware('localization');
+//    Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
+//    Route::post('update', 'Api\EmployeController@update');
+//    Route::post('password-change', 'Api\EmployeController@passwordChange');
+//    Route::post('password-old', 'Api\EmployeController@passwordOld');
+//});
+
 Route::group([
     'prefix' => 'employees'
 ], function () {
     Route::post('login', 'Api\EmployeController@login')->middleware('localization');
-    Route::post('registration', 'Api\EmployeController@registration')->middleware('localization');
-    Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
-    Route::post('update', 'Api\EmployeController@update');
-    Route::post('password-change', 'Api\EmployeController@passwordChange');
-    Route::post('password-old', 'Api\EmployeController@passwordOld');
+
+    Route::group([
+        'middleware' => 'auth:employee'
+    ], function() {
+        Route::post('create', 'Api\EmployeController@registration')->middleware('localization');
+        Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
+        Route::post('update', 'Api\EmployeController@update')->middleware('localization');
+        Route::get('list', 'Api\EmployeController@list')->middleware('localization');
+        Route::post('password-change', 'Api\EmployeController@passwordChange')->middleware('localization');
+        Route::post('password-old', 'Api\EmployeController@passwordOld')->middleware('localization');
+    });
 });
+
 
 Route::group([
     'prefix' => 'users'

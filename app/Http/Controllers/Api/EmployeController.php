@@ -26,7 +26,8 @@ class EmployeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:employee', ['except' => ['login', 'registration']]);
+//        $this->middleware('auth:employee', ['except' => ['login']]);
+        $this->middleware('auth:employee')->except(['index','login']);
     }
 
     protected function guard()
@@ -80,76 +81,73 @@ class EmployeController extends Controller
 //        $name = request('name');
 //        $email = request('email');
 //        $password = request('password');
-        $mail = Employees::where('login',$request->login)->first();
-        if (isset($mail)) return response()->json([
-            'code' => 1,
-            'message' => trans('lang.error_phone')
-        ]);
+        if (Auth::user()->role==1){
+            $mail = Employees::where('login',$request->login)->first();
+            if (isset($mail)) return response()->json([
+                'code' => 1,
+                'message' => trans('lang.error_phone')
+            ]);
 
-        $user = new Employees();
-        $user->name = $request->name;
-        $user->login = $request->login;
-        $user->password = Hash::make($request->password);
-        $user->save();
+            $user = new Employees();
+            $user->name = $request->name;
+            $user->login = $request->login;
+            $user->password = Hash::make($request->password);
+            $user->save();
 
+            return response()->json([
+                'code' => 0,
+                'message' => trans('lang.account')
+            ], 201);
+        }
         return response()->json([
-            'code' => 0,
-            'message' => trans('lang.account')
+            'code' => 1,
+            'message' => "Sizga mumkinmas"
         ], 201);
     }
 
     public function update(Request $request)
     {
-//        $this->validate($request,[
-//            'image' => 'mimes:png,jpg,jpeg,svg,gif'
-//        ]);
-        $user = Employees::find(Auth::user()->id);
-        $user->update([
-            'name' => ($request->name==null)?$user->name:$request->name,
-//            'address' => ($request->address==null)?$user->address:$request->address,
-        ]);
-//        if ($request->notify==1){
-//            if ($request->notify_cat!=null){
-//                $pieces = explode(",", $request->notify_cat);
-//                foreach ($pieces as $item){
-//                    $notific = new Notification([
-//                        'user_id' => $user->id,
-//                        'cat_id' => $item,
-//                        'user_email' => $user->email,
-//                    ]);
-//                    $notific->save();
-//                }
-//            }
-//            else {
-//                $notific = Notification::where('user_id',$user->id)->get();
-//                foreach ($notific as $item){
-//                    $item->user_id =0;
-//                    $item->save();
-//                }
-//            }
-//        }
 
-//        if ($request->hasFile('image')) {
-//            $image = $request->file('image');
-//            $filename = Auth::user()->username."_".time() . '.' . $image->getClientOriginalExtension();
-//            $location = '../storage/app/public/'. $filename;
-//            Image::make($image)->save($location);
-//            $user->image =  "/storage/profile/".$filename;
-//            $user->save();
-//
-//            $upload = Queque::upload();
-//            $upload->chdir('profile'); // open directory 'test'
-//            $link = 'https://api.my-city.uz/storage/'.$filename;
-//            $upload->put($filename, $link,SFTP::SOURCE_LOCAL_FILE);
-//            $pieces = explode("/", $rasm);
-//            $upload->delete($pieces[3]);
-//            $upload->_disconnect(true);
-//            @unlink($location);
-//        }
+        if (Auth::user()->role==1){
+            $user = Employees::find($request->user_id);
+            $password = Hash::make($request->password);
+            $user->name = ($request->name==null)?$user->name:$request->name;
+            $user->password = $password;
+            $user->save();
+        }else {
+            $user = Employees::find(Auth::user()->id);
+            $password = Hash::make($request->password);
+            $user->name = ($request->name==null)?$user->name:$request->name;
+            $user->password = $password;
+            $user->save();
+        }
+
         return response()->json([
             'code' => 0,
-            'message' => 'Профиль успешно обновлен'
+            'message' => trans('lang.update_success')
         ]);
+    }
+
+    public function list(Request $request)
+    {
+        $limit = $request->perpage;
+        $offset = $request->page-1;
+        if (($limit==null) || ($offset==null)) {
+            $offset=0; $limit=50;
+        }
+//        $user = Employees::where('id',Auth::user()->id)->first();
+        if (Auth::user()->role==1){
+            $list = Employees::select('id', 'name','login','role','created_at')
+                ->where('role','!=' , 1)
+                ->orderBy('id', 'desc')
+                ->skip($offset*$limit)->take($limit)
+                ->get()->toArray();
+
+            return response()->json([
+                'code' => 0,
+                'users' => $list
+            ]);
+        }
     }
 
     public function passwordOld(Request $request)
@@ -186,12 +184,12 @@ class EmployeController extends Controller
 
             return response()->json([
                 'code' => 0,
-                'message' => 'Пароль успешно изменен'
+                'message' => trans('lang.password_correct')
             ]);
         }else{
             return response()->json([
                 'code' => 1,
-                'message' => 'Пароли не совпадают!'
+                'message' => trans('lang.password_incorrect')
             ]);
         }
     }
