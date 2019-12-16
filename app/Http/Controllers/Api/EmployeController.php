@@ -150,6 +150,45 @@ class EmployeController extends Controller
         }
     }
 
+    public function delete($id)
+    {
+        if (Auth::user()->role==1){
+            $user = Employees::find($id);
+            $user->delete();
+            return response()->json([
+                'code' => 0,
+                'message' => "success"
+            ]);
+        }
+        return response()->json([
+            'code' => 0,
+            'message' => "no delete"
+        ]);
+    }
+
+    public function getUser($id)
+    {
+        if (Auth::user()->role==1){
+            $user = Employees::select('id', 'name','login','role','created_at')
+                ->where('id',$id)->first();
+            if (isset($user)){
+                $date = $user->created_at;
+                unset($user->created_at);
+                $user->reg_date = strtotime($date);
+
+                return response()->json([
+                    'code' => 0,
+                    'user' => $user
+                ]);
+            }else{
+                return response()->json([
+                    'code' => 0,
+                    'user' => (object)[]
+                ]);
+            }
+        }
+    }
+
     public function passwordOld(Request $request)
     {
         $this->validate($request,[

@@ -48,10 +48,12 @@ Route::group([
     ], function() {
         Route::post('create', 'Api\EmployeController@registration')->middleware('localization');
         Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
-        Route::post('update', 'Api\EmployeController@update')->middleware('localization');
+        Route::put('update', 'Api\EmployeController@update')->middleware('localization');
         Route::get('list', 'Api\EmployeController@list')->middleware('localization');
-        Route::post('password-change', 'Api\EmployeController@passwordChange')->middleware('localization');
-        Route::post('password-old', 'Api\EmployeController@passwordOld')->middleware('localization');
+        Route::delete('delete/{id}', 'Api\EmployeController@delete')->middleware('localization');
+        Route::post('user/{id}', 'Api\EmployeController@getUser')->middleware('localization');
+//        Route::post('password-change', 'Api\EmployeController@passwordChange')->middleware('localization');
+//        Route::post('password-old', 'Api\EmployeController@passwordOld')->middleware('localization');
     });
 });
 
