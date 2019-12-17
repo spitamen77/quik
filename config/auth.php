@@ -52,6 +52,11 @@ return [
             'provider' => 'employees',
             'hash' => false,
         ],
+
+        'client' => [
+            'driver' => 'jwt',
+            'provider' => 'clients',
+        ]
     ],
 
     /*
@@ -80,10 +85,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\Employees::class,
         ],
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+         'clients' => [
+             'driver' => 'eloquent',
+             'table' => App\Clients::class,
+         ],
     ],
 
     /*

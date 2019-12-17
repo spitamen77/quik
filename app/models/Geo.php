@@ -9,7 +9,7 @@
  * Date: 18.04.2019 14:32
  */
 
-namespace App;
+namespace App\models;
 
 use Illuminate\Database\Eloquent\Model;
 

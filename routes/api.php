@@ -27,16 +27,6 @@ Route::group([
     Route::post('me', 'Api\AuthController@me');
 });
 
-//Route::group([
-//    'prefix' => 'employees'
-//], function () {
-//    Route::post('login', 'Api\EmployeController@login')->middleware('localization');
-//    Route::post('create', 'Api\EmployeController@registration')->middleware('localization');
-//    Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
-//    Route::post('update', 'Api\EmployeController@update');
-//    Route::post('password-change', 'Api\EmployeController@passwordChange');
-//    Route::post('password-old', 'Api\EmployeController@passwordOld');
-//});
 
 Route::group([
     'prefix' => 'employees'
@@ -52,11 +42,25 @@ Route::group([
         Route::get('list', 'Api\EmployeController@list')->middleware('localization');
         Route::delete('{id}', 'Api\EmployeController@delete')->middleware('localization');
         Route::post('{id}', 'Api\EmployeController@getUser')->middleware('localization');
-//        Route::post('password-change', 'Api\EmployeController@passwordChange')->middleware('localization');
-//        Route::post('password-old', 'Api\EmployeController@passwordOld')->middleware('localization');
     });
 });
 
+Route::group([
+    'prefix' => 'clients'
+], function () {
+    Route::post('login', 'Api\EmployeController@login')->middleware('localization');
+
+    Route::group([
+        'middleware' => 'auth:client'
+    ], function() {
+        Route::post('create', 'Api\EmployeController@registration')->middleware('localization');
+        Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
+        Route::put('update', 'Api\EmployeController@update')->middleware('localization');
+        Route::get('list', 'Api\EmployeController@list')->middleware('localization');
+        Route::delete('{id}', 'Api\EmployeController@delete')->middleware('localization');
+        Route::post('{id}', 'Api\EmployeController@getUser')->middleware('localization');
+    });
+});
 
 Route::group([
     'prefix' => 'users'
