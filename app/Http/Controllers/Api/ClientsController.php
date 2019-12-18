@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Clients;
 use App\Employees;
+use App\models\ClientBlacklist;
 use App\models\ConfirmClient;
 use App\models\Sms;
 use Illuminate\Support\Facades\Hash;
@@ -228,9 +229,20 @@ class ClientsController extends Controller
             $user->created_at
         );
         $user->reg_date = strtotime($date);
+        $block = ClientBlacklist::where('client_id',Auth::user()->id)->first();
+        if (isset($block)){
+            return response()->json([
+                'code' => 0,
+                'client' => $user,
+                'block' => 'yes',
+                'note' => $block->note
+            ]);
+        }
         return response()->json([
             'code' => 0,
             'client' => $user,
+            'block' => 'no',
+            'note' => ''
         ]);
     }
 

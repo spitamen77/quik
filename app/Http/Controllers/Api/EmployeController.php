@@ -10,7 +10,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Clients;
 use App\Employees;
+use App\models\ClientBlacklist;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -198,6 +200,33 @@ class EmployeController extends Controller
                 'user' => $user
             ]);
         }
+    }
+
+    public function getClient($id) //bloced qilish
+    {
+        $user = Clients::where('id',$id)->first();
+        $date = $user->created_at;
+        unset($user->last_visit,
+            $user->updated_at,
+            $user->last_region,
+            $user->created_at
+        );
+        $user->reg_date = strtotime($date);
+        $block = ClientBlacklist::where('client_id',$id)->first();
+        if (isset($block)){
+            return response()->json([
+                'code' => 0,
+                'client' => $user,
+                'block' => 'yes',
+                'note' => $block->note
+            ]);
+        }
+        return response()->json([
+            'code' => 0,
+            'client' => $user,
+            'block' => 'no',
+            'note' => ''
+        ]);
     }
 
     public function passwordOld(Request $request)
