@@ -36,7 +36,8 @@ Route::group([
     Route::group([
         'middleware' => 'auth:employee'
     ], function() {
-        Route::post('create', 'Api\EmployeController@registration')->middleware('localization');
+        Route::post('/', 'Api\EmployeController@createSms')->middleware('localization');
+        Route::post('code', 'Api\EmployeController@getCode')->middleware('localization');
         Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
         Route::put('update', 'Api\EmployeController@update')->middleware('localization');
         Route::get('list', 'Api\EmployeController@list')->middleware('localization');
