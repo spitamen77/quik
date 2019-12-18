@@ -197,7 +197,7 @@ class ClientsController extends Controller
             'first_name' => ($request->first_name==null)?$user->first_name:$request->first_name,
             'last_name' => ($request->last_name==null)?$user->last_name:$request->last_name,
             'gender' => ($request->gender==null)?$user->gender:$request->gender,
-            'data_birthday' => ($request->birthday==null)?$user->data_birthday:strtotime($request->birthday),
+            'data_birthday' => ($request->birthday==null)?$user->data_birthday:$request->birthday,
             'language' => ($request->language==null)?$user->language:$request->language,
             'last_region' =>($request->region==null)?$user->last_region: $request->region,
         ]);
