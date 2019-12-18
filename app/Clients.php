@@ -23,7 +23,7 @@ class Clients extends Authenticatable implements JWTSubject
 //    protected $table = 'geo';
     protected $fillable = [
         'mobile',
-        'telegram_id',
+//        'telegram_id',
         'first_name',
         'last_name',
         'gender',
@@ -47,9 +47,9 @@ class Clients extends Authenticatable implements JWTSubject
         'photo' =>'string',
         'language' =>'string',
         'mobile' =>'string',
-        'telegram_id' =>'int',
+//        'telegram_id' =>'int',
 //        'status' =>'int',
-        'data_birthday' =>'int',
+        'data_birthday' =>'string',
         'registration_platform' =>'string',
         'last_region' =>'int',
         'last_visit' =>'int',

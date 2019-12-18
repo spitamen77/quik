@@ -193,7 +193,7 @@ class ClientsController extends Controller
         ]);
         $user = Clients::find(Auth::user()->id);
         $user->update([
-            'telegram_id' => ($request->telegram==null)?$user->telegram:$request->telegram,
+//            'telegram_id' => ($request->telegram==null)?$user->telegram:$request->telegram,
             'first_name' => ($request->first_name==null)?$user->first_name:$request->first_name,
             'last_name' => ($request->last_name==null)?$user->last_name:$request->last_name,
             'gender' => ($request->gender==null)?$user->gender:$request->gender,
