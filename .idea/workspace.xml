@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1603b326-715f-463a-97d2-f3168dd1bf12" name="Default" comment="" />
+    <list default="true" id="1603b326-715f-463a-97d2-f3168dd1bf12" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,11 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="api.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="api.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routes/api.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="314">
-              <caret line="61" column="32" lean-forward="true" selection-start-line="61" selection-start-column="32" selection-end-line="61" selection-end-column="44" />
+            <state relative-caret-position="242">
+              <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
               <folding>
                 <element signature="e#37#419#0#PHP" />
               </folding>
@@ -26,11 +28,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ClientsController.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ClientsController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/ClientsController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="218">
-              <caret line="163" column="30" lean-forward="true" selection-start-line="163" selection-start-column="30" selection-end-line="163" selection-end-column="30" />
+            <state relative-caret-position="2162">
+              <caret line="153" lean-forward="true" selection-start-line="153" selection-end-line="153" />
               <folding>
                 <element signature="e#215#231#0#PHP" expanded="true" />
               </folding>
@@ -71,8 +73,8 @@
       <file leaf-file-name="EmployeController.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/EmployeController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1935">
-              <caret line="129" lean-forward="true" selection-start-line="129" selection-end-line="129" />
+            <state relative-caret-position="943">
+              <caret line="78" column="50" lean-forward="true" selection-start-line="78" selection-start-column="50" selection-end-line="78" selection-end-column="50" />
               <folding>
                 <element signature="e#215#233#0#PHP" expanded="true" />
               </folding>
@@ -106,6 +108,7 @@
       <find>fallback_locale</find>
       <find>mapApiRoutes</find>
       <find>getClient(</find>
+      <find>wrong_code</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -134,10 +137,10 @@
         <option value="$PROJECT_DIR$/app/models/Sms.php" />
         <option value="$PROJECT_DIR$/app/models/ConfirmClient.php" />
         <option value="$PROJECT_DIR$/config/auth.php" />
-        <option value="$PROJECT_DIR$/resources/lang/ru/lang.php" />
         <option value="$PROJECT_DIR$/routes/api.php" />
         <option value="$PROJECT_DIR$/app/Clients.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/Api/ClientsController.php" />
+        <option value="$PROJECT_DIR$/resources/lang/ru/lang.php" />
       </list>
     </option>
   </component>
@@ -366,7 +369,7 @@
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.3294893" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.3294893" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -665,16 +668,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/EmployeController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1935">
-          <caret line="129" lean-forward="true" selection-start-line="129" selection-end-line="129" />
-          <folding>
-            <element signature="e#215#233#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/models/Sms.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="79">
@@ -702,13 +695,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/lang/ru/lang.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="21" column="20" selection-start-line="21" selection-start-column="20" selection-end-line="21" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/Clients.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
@@ -719,22 +705,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/api.php">
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/ClientsController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="314">
-          <caret line="61" column="32" lean-forward="true" selection-start-line="61" selection-start-column="32" selection-end-line="61" selection-end-column="44" />
+        <state relative-caret-position="2162">
+          <caret line="153" lean-forward="true" selection-start-line="153" selection-end-line="153" />
           <folding>
-            <element signature="e#37#419#0#PHP" />
+            <element signature="e#215#231#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/ClientsController.php">
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/Api/EmployeController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="218">
-          <caret line="163" column="30" lean-forward="true" selection-start-line="163" selection-start-column="30" selection-end-line="163" selection-end-column="30" />
+        <state relative-caret-position="943">
+          <caret line="78" column="50" lean-forward="true" selection-start-line="78" selection-start-column="50" selection-end-line="78" selection-end-column="50" />
           <folding>
-            <element signature="e#215#231#0#PHP" expanded="true" />
+            <element signature="e#215#233#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/lang/ru/lang.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="21" column="20" selection-start-line="21" selection-start-column="20" selection-end-line="21" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/api.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+          <folding>
+            <element signature="e#37#419#0#PHP" />
           </folding>
         </state>
       </provider>
