@@ -156,7 +156,7 @@ class ClientsController extends Controller
     {
         $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->new_phone);
         $old_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->old_phone);
-        $sms_code = ConfirmClient::where('mobile',$request->mobile)->where('code','=',$request->code)->first();
+        $sms_code = ConfirmClient::where('mobile',$new_phone)->where('code','=',$request->code)->first();
         if (isset($sms_code)){
             $old = Clients::where('mobile', $old_phone)->first();
             if (isset($old)){
