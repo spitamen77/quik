@@ -56,6 +56,7 @@ return [
         'client' => [
             'driver' => 'jwt',
             'provider' => 'clients',
+            'hash' => false,
         ]
     ],
 
@@ -87,7 +88,7 @@ return [
         ],
          'clients' => [
              'driver' => 'eloquent',
-             'table' => App\Clients::class,
+             'model' => App\Clients::class,
          ],
     ],
 

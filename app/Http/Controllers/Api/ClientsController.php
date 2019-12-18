@@ -31,7 +31,7 @@ class ClientsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:client')->except(['createSms','login']);
+        $this->middleware('auth:client')->except(['createSms','login','getCode']);
     }
 
     protected function guard()
@@ -79,27 +79,35 @@ class ClientsController extends Controller
     public function getCode(Request $request)
     {
         $phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
-        $sms_code = ConfirmClient::where('mobile',$request->mobile)->where('code',$request->code)->first();
+        $sms_code = ConfirmClient::where('mobile',$request->mobile)->where('code','=',$request->code)->first();
         if (isset($sms_code)){
             $user = Clients::where('mobile',$phone)->first();
             if (isset($user)){
+                $sms_code->delete();
                 $token = JWTAuth::fromUser($user);
                 if (!$token) {
-                    return response()->json(['error' => 'invalid_credentials'], 401);
+                    return response()->json([
+                        'code' => 1,
+                        'client' => (object)[],
+                        'message' => 'Error'
+                    ], 401);
                 }
-//            return response()->json(compact('userToken'));
+                $user->last_visit = time();
+                $user->save();
                 $date = $user->created_at;
-                unset($user->email_verified_at,
+                unset($user->last_visit,
                     $user->updated_at,
+                    $user->last_region,
                     $user->created_at
                 );
                 $user->reg_date = strtotime($date);
                 $user->access_token=$token;
                 $user->token_type='Bearer';
-                $user->expires_at = auth()->factory()->getTTL() * 60;
+                $user->expires_at = auth()->factory()->getTTL() * 60*24*30*12;
                 return response()->json([
                     'code' => 0,
-                    'client' => $user
+                    'client' => $user,
+                    'message' => 'Success'
                 ], 200);
             }else{
                 $phn = Clients::create([
@@ -112,26 +120,66 @@ class ClientsController extends Controller
                 $user = Clients::where('mobile', $phone)->first();
                 $token = JWTAuth::fromUser($user);
                 if (!$token) {
-                    return response()->json(['error' => 'invalid_credentials'], 401);
+                    return response()->json([
+                        'code' => 1,
+                        'client' => (object)[],
+                        'message' => 'Error'
+                    ], 401);
                 }
 //            return response()->json(compact('userToken'));
                 $date = $user->created_at;
-                unset($user->email_verified_at,
+                unset($user->last_visit,
                     $user->updated_at,
+                    $user->last_region,
                     $user->created_at
                 );
                 $user->reg_date = strtotime($date);
                 $user->access_token=$token;
                 $user->token_type='Bearer';
-                $user->expires_at = auth()->factory()->getTTL() * 60;
+                $user->expires_at = auth()->factory()->getTTL() * 60*24*30*12;
                 return response()->json([
                     'code' => 0,
-                    'client' => $user
+                    'client' => $user,
+                    'message' => 'Success'
                 ], 200);
             }
         }else{
             return response()->json([
                 'code' => 1,
+                'client' => (object)[],
+                'message' => trans('lang.wrong_code')
+            ], 200);
+        }
+    }
+
+    public function changePhone(Request $request)
+    {
+        $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->new_phone);
+        $old_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->old_phone);
+        $sms_code = ConfirmClient::where('mobile',$request->mobile)->where('code','=',$request->code)->first();
+        if (isset($sms_code)){
+            $old = Clients::where('mobile', $old_phone)->first();
+            if (isset($old)){
+                $sms_code->delete();
+                $old->update([
+                    'mobile' => $new_phone,
+                ]);
+                return response()->json([
+                    'code' => 0,
+                    'client' => Clients::where('mobile', $new_phone)->first(),
+                    'message' => trans('lang.success')
+                ], 200);
+            }else{
+                return response()->json([
+                    'code' => 1,
+                    'client' => (object)[],
+                    'message' => trans('lang.wrong_number')
+                ], 200);
+            }
+        }else{
+            return response()->json([
+                'code' => 1,
+                'client' => (object)[],
                 'message' => trans('lang.wrong_code')
             ], 200);
         }
@@ -139,24 +187,50 @@ class ClientsController extends Controller
 
     public function update(Request $request)
     {
+//        var_dump($request->id); exit('adasd');
+        $this->validate($request,[
+            'image' => 'mimes:png,jpg,jpeg,svg,gif'
+        ]);
+        $user = Clients::find(Auth::user()->id);
+        $user->update([
+            'telegram_id' => ($request->telegram==null)?$user->telegram:$request->telegram,
+            'first_name' => ($request->first_name==null)?$user->first_name:$request->first_name,
+            'last_name' => ($request->last_name==null)?$user->last_name:$request->last_name,
+            'gender' => ($request->gender==null)?$user->gender:$request->gender,
+            'data_birthday' => ($request->birthday==null)?$user->data_birthday:strtotime($request->birthday),
+            'language' => ($request->language==null)?$user->language:$request->language,
+            'last_region' =>($request->region==null)?$user->last_region: $request->region,
+        ]);
 
-        if (Auth::user()->role==1){
-            $user = Employees::find($request->user_id);
-            $password = Hash::make($request->password);
-            $user->name = ($request->name==null)?$user->name:$request->name;
-            $user->password = $password;
-            $user->save();
-        }else {
-            $user = Employees::find(Auth::user()->id);
-            $password = Hash::make($request->password);
-            $user->name = ($request->name==null)?$user->name:$request->name;
-            $user->password = $password;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = Auth::user()->id."_".time() . '.' . $image->getClientOriginalExtension();
+            $location = '../storage/app/client/'. $filename;
+            Image::make($image)->save($location);
+            $user->photo =  "/storage/client/".$filename;
             $user->save();
         }
-
         return response()->json([
             'code' => 0,
+            'user_image' => $user->photo,
             'message' => trans('lang.update_success')
+        ]);
+
+    }
+
+    public function getClient($id)
+    {
+        $user = Clients::where('id',Auth::user()->id)->first();
+        $date = $user->created_at;
+        unset($user->last_visit,
+            $user->updated_at,
+            $user->last_region,
+            $user->created_at
+        );
+        $user->reg_date = strtotime($date);
+        return response()->json([
+            'code' => 0,
+            'client' => $user,
         ]);
     }
 
@@ -180,22 +254,6 @@ class ClientsController extends Controller
                 'users' => $list
             ]);
         }
-    }
-
-    public function delete($id)
-    {
-        if (Auth::user()->role==1){
-            $user = Employees::find($id);
-            $user->delete();
-            return response()->json([
-                'code' => 0,
-                'message' => "success"
-            ]);
-        }
-        return response()->json([
-            'code' => 0,
-            'message' => "no delete"
-        ]);
     }
 
     public function getUser($id)

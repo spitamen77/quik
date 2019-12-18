@@ -26,7 +26,7 @@ class ConfirmClient extends Model
     ];
 
     protected $casts = [
-        'mobile' =>'int',
+        'mobile' =>'string',
         'code' =>'int',
         'created_at' =>'int'
     ];

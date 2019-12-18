@@ -17,71 +17,59 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group([
-    'prefix' => 'auth'
-], function () {
-    Route::post('login', 'Api\AuthController@login');
-    Route::post('registration', 'Api\AuthController@registration');
-    Route::post('logout', 'Api\AuthController@logout');
-    Route::post('refresh', 'Api\AuthController@refresh');
-    Route::post('me', 'Api\AuthController@me');
-});
+//Route::group([
+//    'prefix' => 'auth'
+//], function () {
+//    Route::post('login', 'Api\AuthController@login');
+//    Route::post('registration', 'Api\AuthController@registration');
+//    Route::post('logout', 'Api\AuthController@logout');
+//    Route::post('refresh', 'Api\AuthController@refresh');
+//    Route::post('me', 'Api\AuthController@me');
+//});
 
 
 Route::group([
-    'prefix' => 'employees'
+    'prefix' => 'v1'
 ], function () {
-    Route::post('login', 'Api\EmployeController@login')->middleware('localization');
+    Route::post('employee/login', 'Api\EmployeController@login')->middleware('localization');
 
     Route::group([
         'middleware' => 'auth:employee'
     ], function() {
-        Route::post('/', 'Api\EmployeController@createSms')->middleware('localization');
-        Route::post('code', 'Api\EmployeController@getCode')->middleware('localization');
-        Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
-        Route::put('update', 'Api\EmployeController@update')->middleware('localization');
-        Route::get('list', 'Api\EmployeController@list')->middleware('localization');
-        Route::delete('{id}', 'Api\EmployeController@delete')->middleware('localization');
-        Route::post('{id}', 'Api\EmployeController@getUser')->middleware('localization');
+        Route::post('employees', 'Api\EmployeController@registration')->middleware('localization');
+        Route::post('employee/logout', 'Api\EmployeController@logout')->middleware('localization');
+        Route::put('employee', 'Api\EmployeController@update')->middleware('localization');
+        Route::get('employees', 'Api\EmployeController@list')->middleware('localization');
+        Route::delete('employee/{id}', 'Api\EmployeController@delete')->middleware('localization');
+        Route::post('employee/{id}', 'Api\EmployeController@getUser')->middleware('localization');
+
     });
 });
 
 Route::group([
-    'prefix' => 'clients'
+    'prefix' => 'v1'
 ], function () {
-    Route::post('login', 'Api\EmployeController@login')->middleware('localization');
+    Route::post('client', 'Api\ClientsController@createSms')->middleware('localization');
+    Route::post('client/code', 'Api\ClientsController@getCode')->middleware('localization');
 
     Route::group([
         'middleware' => 'auth:client'
     ], function() {
-        Route::post('create', 'Api\EmployeController@registration')->middleware('localization');
-        Route::post('logout', 'Api\EmployeController@logout')->middleware('localization');
-        Route::put('update', 'Api\EmployeController@update')->middleware('localization');
-        Route::get('list', 'Api\EmployeController@list')->middleware('localization');
-        Route::delete('{id}', 'Api\EmployeController@delete')->middleware('localization');
-        Route::post('{id}', 'Api\EmployeController@getUser')->middleware('localization');
+
+        Route::post('client/logout', 'Api\ClientsController@logout')->middleware('localization');
+        Route::put('client/{id}', 'Api\ClientsController@update')->middleware('localization'); //shu PUT bo`lishi kerak edi
+        Route::get('client/{id}', 'Api\ClientsController@getClient')->middleware('localization');
+        Route::put('client/{id}/change-phone', 'Api\ClientsController@changePhone')->middleware('localization');
+//        Route::post('{id}', 'Api\ClientsController@getUser')->middleware('localization');
     });
 });
 
-Route::group([
-    'prefix' => 'users'
-], function () {
-    Route::get('index', 'Api\UserController@index');
-    Route::get('data', 'Api\UserController@data');
-
-    Route::group([
-        'middleware' => 'auth:api'
-    ], function() {
-        Route::post('update', 'Api\UserController@update');
-        Route::post('password-change', 'Api\UserController@passwordChange');
-        Route::post('password-old', 'Api\UserController@passwordOld');
-        Route::get('company', 'Api\UserController@product');
-        Route::get('getuser', 'Api\UserController@getUser');
-        Route::get('favorite', 'Api\CompanyController@myFavorites');
-        Route::post('favorite-add', 'Api\UserController@addFavorite');
-        Route::get('favorite-delete', 'Api\UserController@delFavorite');
-        Route::get('service', 'Api\UserController@userBusiness');  // buni tekshirishim kerak
-    });
+Route::group(['middleware' => 'auth:api'], function() {
+    Route::get('articles', 'ArticleController@index');
+    Route::get('articles/{article}', 'ArticleController@show');
+    Route::post('articles', 'ArticleController@store');
+    Route::put('articles/{article}', 'ArticleController@update');
+    Route::delete('articles/{article}', 'ArticleController@delete');
 });
 
 Route::fallback(function(){

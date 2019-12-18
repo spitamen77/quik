@@ -33,8 +33,8 @@ class Clients extends Authenticatable implements JWTSubject
         'registration_platform',
         'last_region',
         'last_visit',
-        'black_list',
-        'status',
+//        'black_list',
+//        'status',
         'created_at',
         'updated_at',
 
@@ -46,14 +46,14 @@ class Clients extends Authenticatable implements JWTSubject
         'last_name' =>'string',
         'photo' =>'string',
         'language' =>'string',
-        'mobile' =>'int',
+        'mobile' =>'string',
         'telegram_id' =>'int',
-        'status' =>'int',
+//        'status' =>'int',
         'data_birthday' =>'int',
         'registration_platform' =>'string',
         'last_region' =>'int',
         'last_visit' =>'int',
-        'black_list' =>'int',
+//        'black_list' =>'int',
     ];
 
     public function sms()

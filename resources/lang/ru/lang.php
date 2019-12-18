@@ -18,5 +18,7 @@
        'update_success' => 'Профиль успешно обновлен',
        'password_correct' => 'Пароль успешно изменен',
        'password_incorrect' => 'Пароли не совпадают!',
+       'wrong_code',
+       'wrong_number',
    ];
 ?>
