@@ -308,7 +308,7 @@ class EmployeController extends Controller
             if ($request->note!=null){
                 if ($request->ban=="yes"){
                     $phn = ClientBlacklist::create([
-                        'client_id' => $user->mobile,
+                        'client_id' => $user->id,
                         'note'=>$request->note,
                         'created_at'=>time()
                     ]);
