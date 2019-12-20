@@ -67,7 +67,7 @@ class EmployeController extends Controller
 
         return response()->json(
             [
-                'user'=>$body,
+                'employee'=>$body,
                 'code' => 0,
                 'message' => trans('lang.success')
             ]);
@@ -147,7 +147,7 @@ class EmployeController extends Controller
 
             return response()->json([
                 'code' => 0,
-                'users' => $list
+                'employees' => $list
             ]);
         }
     }
@@ -180,12 +180,12 @@ class EmployeController extends Controller
 
                 return response()->json([
                     'code' => 0,
-                    'user' => $user
+                    'employee' => $user
                 ]);
             }else{
                 return response()->json([
                     'code' => 0,
-                    'user' => (object)[]
+                    'employee' => (object)[]
                 ]);
             }
         }else {
@@ -197,7 +197,7 @@ class EmployeController extends Controller
 
             return response()->json([
                 'code' => 0,
-                'user' => $user
+                'employee' => $user
             ]);
         }
     }
@@ -247,8 +247,8 @@ class EmployeController extends Controller
             $offset=0; $limit=50;
         }
 
-        $list = Clients::select('id','mobile','first_name','last_name','gender','data_birthday','photo','language','registration_platform','last_region','last_visit','created_at')
-            ->where('id','!=',0);
+        $list = Clients::select('id','mobile','first_name','last_name','gender','data_birthday','photo','language','registration_platform','last_region','last_visit','created_at');
+//            ->where('id','!=',0);
         if (isset($request->block)){
             $tags = ClientBlacklist::orderByDesc('id')->get();
             $tras=[];
@@ -269,12 +269,15 @@ class EmployeController extends Controller
 
         $list = $list->orderBy('id', 'desc')
             ->skip($offset*$limit)->take($limit)
-            ->get()->toArray();
+            ->get();
+//        dd($list->toSql());
         $compa = [];
         foreach ($list as $item){
-            $date = $item['created_at'];
-            unset($item['created_at']);
-            $item['reg_date'] = strtotime($date);
+            $date = $item->created_at;
+            unset($item->created_at);
+            $item->reg_date = strtotime($date);
+            if ($item->block){}
+            else $item->block = null;
             $compa[] = $item;
         }
 

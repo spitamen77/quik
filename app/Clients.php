@@ -62,7 +62,7 @@ class Clients extends Authenticatable implements JWTSubject
         return $this->hasOne(Sms::class,'sms_id','id');
     }
 
-    public function black()
+    public function block()
     {
         return $this->hasOne(ClientBlacklist::class,'client_id','id');
     }
