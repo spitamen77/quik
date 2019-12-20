@@ -42,7 +42,8 @@ Route::group([
         Route::get('employees', 'Api\EmployeController@list')->middleware('localization');
         Route::delete('employee/{id}', 'Api\EmployeController@delete')->middleware('localization');
         Route::get('employee/{id}', 'Api\EmployeController@getUser')->middleware('localization');
-
+        Route::get('client/{id}', 'Api\EmployeController@getClient')->middleware('localization');
+        Route::put('client/{id}', 'Api\EmployeController@updateClient')->middleware('localization'); //shu PUT bo`lishi kerak edi
     });
 });
 

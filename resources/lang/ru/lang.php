@@ -20,5 +20,8 @@
        'password_incorrect' => 'Пароли не совпадают!',
        'wrong_code',
        'wrong_number',
+       'add_note',
+       'add_ban',
+       'del_ban',
    ];
 ?>

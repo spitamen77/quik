@@ -229,6 +229,102 @@ class EmployeController extends Controller
         ]);
     }
 
+    public function getClients(Request $request)
+    {
+        $limit = $request->perpage;
+        $offset = $request->page-1;
+        if (($limit==null) || ($offset==null)) {
+            $offset=0; $limit=50;
+        }
+
+        $list = Clients::select('id','mobile','first_name','last_name','gender','data_birthday','photo','language','registration_platform','last_region','last_visit','created_at');
+        if (isset($request->block)){
+            $tags = ClientBlacklist::orderByDesc('id')->get();
+            $tras=[];
+            foreach ($tags as $item){
+                $tras[]=$item->client_id;
+            }
+            if (is_array($tras)) {
+                $list->whereIn('clients.id', $tras);
+            }
+        }
+        $list->where(function ($query) use ($request) {
+            $query->orWhere('clients.mobile', 'LIKE', "%{$request->search}%")
+                ->orWhere('clients.first_name','LIKE', "%{$request->search}%")
+                ->orWhere('clients.last_name','LIKE', "%{$request->search}%");
+        });
+
+        $list->orderBy('id', 'desc')
+            ->skip($offset*$limit)->take($limit)
+            ->get()->toArray();
+
+        return response()->json([
+            'code' => 0,
+            'clients' => $list
+        ]);
+
+    }
+
+    public function updateClient(Request $request)
+    {
+//        var_dump($request->id); exit('adasd');
+        $this->validate($request,[
+            'image' => 'mimes:png,jpg,jpeg,svg,gif'
+        ]);
+        $user = Clients::find($request->id);
+        $user->update([
+//            'telegram_id' => ($request->telegram==null)?$user->telegram:$request->telegram,
+            'first_name' => ($request->first_name==null)?$user->first_name:$request->first_name,
+            'last_name' => ($request->last_name==null)?$user->last_name:$request->last_name,
+            'gender' => ($request->gender==null)?$user->gender:$request->gender,
+            'data_birthday' => ($request->birthday==null)?$user->data_birthday:$request->birthday,
+            'language' => ($request->language==null)?$user->language:$request->language,
+            'last_region' =>($request->region==null)?$user->last_region: $request->region,
+        ]);
+        if ($request->ban!=null){
+            if ($request->note!=null){
+                if ($request->ban=="yes"){
+                    $phn = ClientBlacklist::create([
+                        'client_id' => $user->mobile,
+                        'note'=>$request->note,
+                    ]);
+                    return response()->json([
+                        'code' => 1,
+                        'user_image' => $user->photo,
+                        'message' => trans('lang.add_ban')
+                    ],201);
+                }else{
+                    $ban = ClientBlacklist::find($request->id);
+                    $ban->delete();
+                    return response()->json([
+                        'code' => 0,
+                        'user_image' => $user->photo,
+                        'message' => trans('lang.del_ban')
+                    ]);
+                }
+            }else return response()->json([
+                'code' => 1,
+                'user_image' => $user->photo,
+                'message' => trans('lang.add_note')
+            ],200);
+        }
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = Auth::user()->id."_".time() . '.' . $image->getClientOriginalExtension();
+            $location = '../storage/app/client/'. $filename;
+            Image::make($image)->save($location);
+            $user->photo =  "/storage/client/".$filename;
+            $user->save();
+        }
+        return response()->json([
+            'code' => 0,
+            'user_image' => $user->photo,
+            'message' => trans('lang.update_success')
+        ]);
+
+    }
+
     public function passwordOld(Request $request)
     {
         $this->validate($request,[

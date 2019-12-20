@@ -10,6 +10,7 @@
 
 namespace App;
 
+use App\models\ClientBlacklist;
 use App\models\Sms;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -59,6 +60,11 @@ class Clients extends Authenticatable implements JWTSubject
     public function sms()
     {
         return $this->hasOne(Sms::class,'sms_id','id');
+    }
+
+    public function black()
+    {
+        return $this->hasOne(ClientBlacklist::class,'client_id','id');
     }
 
     public function getJWTIdentifier()
