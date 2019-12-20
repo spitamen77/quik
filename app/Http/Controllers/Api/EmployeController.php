@@ -310,6 +310,7 @@ class EmployeController extends Controller
                     $phn = ClientBlacklist::create([
                         'client_id' => $user->mobile,
                         'note'=>$request->note,
+                        'created_at'=>time()
                     ]);
                     return response()->json([
                         'code' => 1,
