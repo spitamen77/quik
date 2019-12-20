@@ -247,33 +247,40 @@ class EmployeController extends Controller
             $offset=0; $limit=50;
         }
 
-        $list = Clients::select('id','mobile','first_name','last_name','gender','data_birthday','photo','language','registration_platform','last_region','last_visit','created_at');
+        $list = Clients::select('id','mobile','first_name','last_name','gender','data_birthday','photo','language','registration_platform','last_region','last_visit','created_at')
+            ->where('id','!=',0);
         if (isset($request->block)){
-            exit('asdasd');
             $tags = ClientBlacklist::orderByDesc('id')->get();
             $tras=[];
             foreach ($tags as $item){
                 $tras[]=$item->client_id;
             }
             if (is_array($tras)) {
-                $list->whereIn('clients.id', $tras);
+                $list = $list->whereIn('clients.id', $tras);
             }
         }
         if (isset($request->search)){
-            $list->where(function ($query) use ($request) {
+            $list = $list->where(function ($query) use ($request) {
                 $query->orWhere('clients.mobile', 'LIKE', "%{$request->search}%")
                     ->orWhere('clients.first_name','LIKE', "%{$request->search}%")
                     ->orWhere('clients.last_name','LIKE', "%{$request->search}%");
             });
         }
 
-        $list->orderBy('id', 'desc')
+        $list = $list->orderBy('id', 'desc')
             ->skip($offset*$limit)->take($limit)
             ->get()->toArray();
+        $compa = [];
+        foreach ($list as $item){
+            $date = $item['created_at'];
+            unset($item['created_at']);
+            $item['reg_date'] = strtotime($date);
+            $compa[] = $item;
+        }
 
         return response()->json([
             'code' => 0,
-            'clients' => $list
+            'clients' => $compa
         ]);
 
     }

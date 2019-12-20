@@ -31,7 +31,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group([
     'prefix' => 'v1'
 ], function () {
-    Route::post('employee/login', 'Api\EmployeController@login')->middleware('localization');
+    Route::post('private/employee/login', 'Api\EmployeController@login')->middleware('localization');
 
     Route::group([
         'middleware' => 'auth:employee'
@@ -39,7 +39,7 @@ Route::group([
         Route::group([
             'prefix' => 'private'
         ], function () {
-            Route::post('employees', 'Api\EmployeController@registration')->middleware('localization');
+            Route::post('employee', 'Api\EmployeController@registration')->middleware('localization');
             Route::post('employee/logout', 'Api\EmployeController@logout')->middleware('localization');
             Route::put('employee', 'Api\EmployeController@update')->middleware('localization');
             Route::get('employees', 'Api\EmployeController@list')->middleware('localization');

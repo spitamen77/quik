@@ -229,122 +229,13 @@ class ClientsController extends Controller
             $user->created_at
         );
         $user->reg_date = strtotime($date);
-        $block = ClientBlacklist::where('client_id',Auth::user()->id)->first();
-        if (isset($block)){
-            return response()->json([
-                'code' => 0,
-                'client' => $user,
-                'block' => 'yes',
-                'note' => $block->note
-            ]);
-        }
+
         return response()->json([
             'code' => 0,
             'client' => $user,
-            'block' => 'no',
-            'note' => ''
         ]);
     }
 
-    public function list(Request $request)
-    {
-        $limit = $request->perpage;
-        $offset = $request->page-1;
-        if (($limit==null) || ($offset==null)) {
-            $offset=0; $limit=50;
-        }
-//        $user = Employees::where('id',Auth::user()->id)->first();
-        if (Auth::user()->role==1){
-            $list = Employees::select('id', 'name','login','role','created_at')
-                ->where('role','!=' , 1)
-                ->orderBy('id', 'desc')
-                ->skip($offset*$limit)->take($limit)
-                ->get()->toArray();
-
-            return response()->json([
-                'code' => 0,
-                'users' => $list
-            ]);
-        }
-    }
-
-    public function getUser($id)
-    {
-        if (Auth::user()->role==1){
-            $user = Employees::select('id', 'name','login','role','created_at')
-                ->where('id',$id)->first();
-            if (isset($user)){
-                $date = $user->created_at;
-                unset($user->created_at);
-                $user->reg_date = strtotime($date);
-
-                return response()->json([
-                    'code' => 0,
-                    'user' => $user
-                ]);
-            }else{
-                return response()->json([
-                    'code' => 0,
-                    'user' => (object)[]
-                ]);
-            }
-        }else {
-            $user = Employees::select('id', 'name','login','role','created_at')
-                ->where('id',Auth::user()->id)->first();
-            $date = $user->created_at;
-            unset($user->created_at);
-            $user->reg_date = strtotime($date);
-
-            return response()->json([
-                'code' => 0,
-                'user' => $user
-            ]);
-        }
-    }
-
-    public function passwordOld(Request $request)
-    {
-        $this->validate($request,[
-            'passwordold' =>'required',
-        ]);
-        $user = Employees::find(Auth::user()->id);
-        if(Hash::check($request->passwordold, $user->password)){
-            return response()->json([
-                'code' => 0,
-                'message' => 'Пароль совпадают'
-            ]);
-        }else{
-            return response()->json([
-                'code' => 1,
-                'message' => 'Пароли не совпадают!'
-            ]);
-        }
-    }
-
-    public function passwordChange(Request $request)
-    {
-        $this->validate($request,[
-            'passwordold' =>'required',
-            'password' => 'required|min:4'
-        ]);
-        $user = Employees::find(Auth::user()->id);
-
-        if(Hash::check($request->passwordold, $user->password)){
-            $password = Hash::make($request->password);
-            $user->password = $password;
-            $user->save();
-
-            return response()->json([
-                'code' => 0,
-                'message' => trans('lang.password_correct')
-            ]);
-        }else{
-            return response()->json([
-                'code' => 1,
-                'message' => trans('lang.password_incorrect')
-            ]);
-        }
-    }
 
     /**
      * Log the user out (Invalidate the token).
