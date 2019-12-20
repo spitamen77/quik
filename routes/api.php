@@ -36,14 +36,19 @@ Route::group([
     Route::group([
         'middleware' => 'auth:employee'
     ], function() {
-        Route::post('employees', 'Api\EmployeController@registration')->middleware('localization');
-        Route::post('employee/logout', 'Api\EmployeController@logout')->middleware('localization');
-        Route::put('employee', 'Api\EmployeController@update')->middleware('localization');
-        Route::get('employees', 'Api\EmployeController@list')->middleware('localization');
-        Route::delete('employee/{id}', 'Api\EmployeController@delete')->middleware('localization');
-        Route::get('employee/{id}', 'Api\EmployeController@getUser')->middleware('localization');
-        Route::get('client/{id}', 'Api\EmployeController@getClient')->middleware('localization');
-        Route::put('client/{id}', 'Api\EmployeController@updateClient')->middleware('localization'); //shu PUT bo`lishi kerak edi
+        Route::group([
+            'prefix' => 'private'
+        ], function () {
+            Route::post('employees', 'Api\EmployeController@registration')->middleware('localization');
+            Route::post('employee/logout', 'Api\EmployeController@logout')->middleware('localization');
+            Route::put('employee', 'Api\EmployeController@update')->middleware('localization');
+            Route::get('employees', 'Api\EmployeController@list')->middleware('localization');
+            Route::delete('employee/{id}', 'Api\EmployeController@delete')->middleware('localization');
+            Route::get('employee/{id}', 'Api\EmployeController@getUser')->middleware('localization');
+            Route::get('client/{id}', 'Api\EmployeController@getClient')->middleware('localization');
+            Route::get('clients', 'Api\EmployeController@getClients')->middleware('localization');
+            Route::put('client/{id}', 'Api\EmployeController@updateClient')->middleware('localization'); //shu PUT bo`lishi kerak edi
+        });
     });
 });
 
@@ -54,7 +59,7 @@ Route::group([
     Route::post('client/code', 'Api\ClientsController@getCode')->middleware('localization');
 
     Route::group([
-        'middleware' => 'auth:client'
+        'middleware' => 'auth:client','auth:employee'
     ], function() {
 
         Route::post('client/logout', 'Api\ClientsController@logout')->middleware('localization');

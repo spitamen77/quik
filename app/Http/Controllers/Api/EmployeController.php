@@ -205,28 +205,38 @@ class EmployeController extends Controller
     public function getClient($id) //bloced qilish
     {
         $user = Clients::where('id',$id)->first();
-        $date = $user->created_at;
-        unset($user->last_visit,
-            $user->updated_at,
-            $user->last_region,
-            $user->created_at
-        );
-        $user->reg_date = strtotime($date);
-        $block = ClientBlacklist::where('client_id',$id)->first();
-        if (isset($block)){
+        if (isset($user)){
+            $date = $user->created_at;
+            unset($user->last_visit,
+                $user->updated_at,
+                $user->last_region,
+                $user->created_at
+            );
+            $user->reg_date = strtotime($date);
+            $block = ClientBlacklist::where('client_id',$id)->first();
+            if (isset($block)){
+                return response()->json([
+                    'code' => 0,
+                    'client' => $user,
+                    'block' => 'yes',
+                    'note' => $block->note
+                ]);
+            }
             return response()->json([
                 'code' => 0,
                 'client' => $user,
-                'block' => 'yes',
-                'note' => $block->note
+                'block' => 'no',
+                'note' => ''
+            ]);
+        }else{
+            return response()->json([
+                'code' => 0,
+                'client' => (object)[],
+                'block' => 'no',
+                'note' => ''
             ]);
         }
-        return response()->json([
-            'code' => 0,
-            'client' => $user,
-            'block' => 'no',
-            'note' => ''
-        ]);
+
     }
 
     public function getClients(Request $request)
@@ -239,6 +249,7 @@ class EmployeController extends Controller
 
         $list = Clients::select('id','mobile','first_name','last_name','gender','data_birthday','photo','language','registration_platform','last_region','last_visit','created_at');
         if (isset($request->block)){
+            exit('asdasd');
             $tags = ClientBlacklist::orderByDesc('id')->get();
             $tras=[];
             foreach ($tags as $item){
@@ -248,11 +259,13 @@ class EmployeController extends Controller
                 $list->whereIn('clients.id', $tras);
             }
         }
-        $list->where(function ($query) use ($request) {
-            $query->orWhere('clients.mobile', 'LIKE', "%{$request->search}%")
-                ->orWhere('clients.first_name','LIKE', "%{$request->search}%")
-                ->orWhere('clients.last_name','LIKE', "%{$request->search}%");
-        });
+        if (isset($request->search)){
+            $list->where(function ($query) use ($request) {
+                $query->orWhere('clients.mobile', 'LIKE', "%{$request->search}%")
+                    ->orWhere('clients.first_name','LIKE', "%{$request->search}%")
+                    ->orWhere('clients.last_name','LIKE', "%{$request->search}%");
+            });
+        }
 
         $list->orderBy('id', 'desc')
             ->skip($offset*$limit)->take($limit)
