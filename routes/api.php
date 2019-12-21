@@ -49,6 +49,11 @@ Route::group([
             Route::get('client/{id}', 'Api\EmployeController@getClient')->middleware('localization');
             Route::get('clients', 'Api\EmployeController@getClients')->middleware('localization');
             Route::put('client/{id}', 'Api\EmployeController@updateClient')->middleware('localization'); //shu PUT bo`lishi kerak edi
+            Route::get('regions', 'Api\EmployeController@showRegions')->middleware('localization');
+            Route::get('region/{id}', 'Api\EmployeController@getRegion')->middleware('localization');
+            Route::post('region', 'Api\EmployeController@storeRegion')->middleware('localization');
+            Route::put('region/{id}', 'Api\EmployeController@updateRegion')->middleware('localization');
+            Route::delete('region/{id}', 'Api\EmployeController@deleteRegion')->middleware('localization');
         });
     });
 });
@@ -68,7 +73,8 @@ Route::group([
         Route::get('client/{id}', 'Api\ClientsController@getClient')->middleware('localization');
         Route::put('client/{id}/change-phone', 'Api\ClientsController@changePhone')->middleware('localization');
         Route::get('refresh', 'Api\ClientsController@refresh')->middleware('localization');
-//        Route::post('{id}', 'Api\ClientsController@getUser')->middleware('localization');
+        Route::get('regions', 'Api\ClientsController@showRegions')->middleware('localization');
+        Route::get('region/{id}', 'Api\ClientsController@getRegion')->middleware('localization');
     });
 });
 

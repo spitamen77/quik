@@ -18,6 +18,8 @@
        'update_success' => 'Профиль успешно обновлен',
        'password_correct' => 'Пароль успешно изменен',
        'password_incorrect' => 'Пароли не совпадают!',
+       'no_object',
+       'success_delete',
        'wrong_code',
        'wrong_number',
        'add_note',

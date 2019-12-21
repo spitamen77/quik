@@ -13,6 +13,7 @@ namespace App\Http\Controllers\Api;
 use App\Clients;
 use App\Employees;
 use App\models\ClientBlacklist;
+use App\models\Regions;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -354,6 +355,69 @@ class EmployeController extends Controller
             'message' => trans('lang.update_success')
         ]);
 
+    }
+
+    public function storeRegion(Request $request)
+    {
+        $phn = Regions::create([
+            'name_ru' => $request->name_ru,
+            'name_uz'=>$request->name_uz,
+            'coordinates'=>$request->coordinates
+        ]);
+        return response()->json([
+            'code' => 0,
+            'region_id' => $phn->id,
+            'message' => trans('lang.success')
+        ],201);
+    }
+
+    public function updateRegion(Request $request)
+    {
+        $user = Regions::find($request->id);
+        $user->update([
+            'name_ru' => ($request->name_ru==null)?$user->name_ru:$request->name_ru,
+            'name_uz' => ($request->name_uz==null)?$user->name_uz:$request->name_uz,
+            'coordinates' => ($request->coordinates==null)?$user->coordinates:$request->coordinates,
+        ]);
+        return response()->json([
+            'code' => 0,
+            'message' => trans('lang.success'),
+        ]);
+    }
+
+    public function deleteRegion($id)
+    {
+        $user = Regions::find($id);
+        if (isset($user)){
+            $user->delete();
+            return response()->json([
+                'code' => 0,
+                'message' => trans('lang.success_delete')
+            ],204);
+        }else{
+            return response()->json([
+                'code' => 1,
+                'message' => trans('lang.no_object')
+            ]);
+        }
+    }
+
+    public function showRegions()
+    {
+        $reg = Regions::all();
+        return response()->json([
+            'code' => 0,
+            'regions' => $reg
+        ]);
+    }
+
+    public function getRegion($id)
+    {
+        $reg = Regions::where('id',$id)->first();
+        return response()->json([
+            'code' => 0,
+            'region' => $reg
+        ]);
     }
 
     public function passwordOld(Request $request)

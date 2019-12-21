@@ -14,6 +14,7 @@ use App\Clients;
 use App\Employees;
 use App\models\ClientBlacklist;
 use App\models\ConfirmClient;
+use App\models\Regions;
 use App\models\Sms;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -236,6 +237,23 @@ class ClientsController extends Controller
         ]);
     }
 
+    public function showRegions()
+    {
+        $reg = Regions::select('name_ru','name_uz')->all();
+        return response()->json([
+            'code' => 0,
+            'regions' => $reg
+        ]);
+    }
+
+    public function getRegion($id)
+    {
+        $reg = Regions::select('name_ru','name_uz')->where('id',$id)->first();
+        return response()->json([
+            'code' => 0,
+            'region' => $reg
+        ]);
+    }
 
     /**
      * Log the user out (Invalidate the token).
