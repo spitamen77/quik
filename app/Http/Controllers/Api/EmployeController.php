@@ -111,7 +111,7 @@ class EmployeController extends Controller
     {
 
         if (Auth::user()->role==1){
-            $user = Employees::find($request->user_id);
+            $user = Employees::find($request->id);
             $password = Hash::make($request->password);
             $user->name = ($request->name==null)?$user->name:$request->name;
             $user->password = $password;

@@ -60,13 +60,14 @@ Route::group([
     Route::post('client/code', 'Api\ClientsController@getCode')->middleware('localization');
 
     Route::group([
-        'middleware' => 'auth:client','auth:employee'
+        'middleware' => 'auth:client'
     ], function() {
 
         Route::post('client/logout', 'Api\ClientsController@logout')->middleware('localization');
         Route::put('client/{id}', 'Api\ClientsController@update')->middleware('localization'); //shu PUT bo`lishi kerak edi
         Route::get('client/{id}', 'Api\ClientsController@getClient')->middleware('localization');
         Route::put('client/{id}/change-phone', 'Api\ClientsController@changePhone')->middleware('localization');
+        Route::get('refresh', 'Api\ClientsController@refresh')->middleware('localization');
 //        Route::post('{id}', 'Api\ClientsController@getUser')->middleware('localization');
     });
 });

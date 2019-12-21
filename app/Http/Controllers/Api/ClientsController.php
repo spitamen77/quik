@@ -104,7 +104,7 @@ class ClientsController extends Controller
                 $user->reg_date = strtotime($date);
                 $user->access_token=$token;
                 $user->token_type='Bearer';
-                $user->expires_at = auth()->factory()->getTTL() * 60*24*30*12;
+                $user->expires_at = auth()->factory()->getTTL() * 60;
                 return response()->json([
                     'code' => 0,
                     'client' => $user,
@@ -137,7 +137,7 @@ class ClientsController extends Controller
                 $user->reg_date = strtotime($date);
                 $user->access_token=$token;
                 $user->token_type='Bearer';
-                $user->expires_at = auth()->factory()->getTTL() * 60*24*30*12;
+                $user->expires_at = auth()->factory()->getTTL() * 60;
                 return response()->json([
                     'code' => 0,
                     'client' => $user,
