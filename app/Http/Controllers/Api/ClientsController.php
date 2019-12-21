@@ -237,9 +237,14 @@ class ClientsController extends Controller
         ]);
     }
 
-    public function showRegions()
+    public function showRegions(Request $request)
     {
-        $reg = Regions::select('id','name_ru','name_uz')->get();
+        if ($request->lang=='all'){
+            $reg = Regions::select('id','name_ru','name_uz')->get();
+        }else{
+            $lang = $request->header('X-localization');
+            $reg = Regions::select('id','name_'.$lang)->get();
+        }
         return response()->json([
             'code' => 0,
             'regions' => $reg
