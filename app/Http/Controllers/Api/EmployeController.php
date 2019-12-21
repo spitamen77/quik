@@ -156,11 +156,18 @@ class EmployeController extends Controller
     {
         if (Auth::user()->role==1){
             $user = Employees::find($id);
-            $user->delete();
-            return response()->json([
-                'code' => 0,
-                'message' => "success"
-            ]);
+            if (isset($user)){
+                $user->delete();
+                return response()->json([
+                    'code' => 0,
+                    'message' => "success"
+                ]);
+            }else{
+                return response()->json([
+                    'code' => 0,
+                    'message' => "no delete"
+                ]);
+            }
         }
         return response()->json([
             'code' => 0,
