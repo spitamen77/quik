@@ -239,7 +239,7 @@ class ClientsController extends Controller
 
     public function showRegions()
     {
-        $reg = Regions::select('name_ru','name_uz')->all();
+        $reg = Regions::select('name_ru','name_uz')->get();
         return response()->json([
             'code' => 0,
             'regions' => $reg

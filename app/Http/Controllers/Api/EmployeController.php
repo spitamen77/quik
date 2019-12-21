@@ -392,7 +392,7 @@ class EmployeController extends Controller
             $user->delete();
             return response()->json([
                 'code' => 0,
-                'message' => trans('lang.success_delete')
+                'message' => trans('lang.success_delete'),
             ],204);
         }else{
             return response()->json([
