@@ -402,18 +402,29 @@ class EmployeController extends Controller
         }
     }
 
-    public function showRegions()
+    public function showRegions(Request $request)
     {
-        $reg = Regions::all();
+        if ($request->lang=='all'){
+            $reg = Regions::all();
+        }else{
+            $lang = $request->header('X-localization');
+            $reg = Regions::select('id','name_'.$lang,'coordinates')->get();
+        }
+
         return response()->json([
             'code' => 0,
             'regions' => $reg
         ]);
     }
 
-    public function getRegion($id)
+    public function getRegion(Request $request)
     {
-        $reg = Regions::where('id',$id)->first();
+        if ($request->lang=='all'){
+            $reg = Regions::where('id',$request->id)->first();
+        }else{
+            $lang = $request->header('X-localization');
+            $reg = Regions::select('id','name_'.$lang,'coordinates')->where('id',$request->id)->first();
+        }
         return response()->json([
             'code' => 0,
             'region' => $reg
