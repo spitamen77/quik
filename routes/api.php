@@ -41,7 +41,7 @@ Route::group([
         ], function () {
             Route::post('employee', 'Api\EmployeController@registration')->middleware('localization');
             Route::post('employee/logout', 'Api\EmployeController@logout')->middleware('localization');
-            Route::put('employee', 'Api\EmployeController@update')->middleware('localization');
+            Route::put('employee/{id}', 'Api\EmployeController@update')->middleware('localization');
             Route::get('employees', 'Api\EmployeController@list')->middleware('localization');
             Route::get('refresh', 'Api\EmployeController@refresh')->middleware('localization');
             Route::delete('employee/{id}', 'Api\EmployeController@delete')->middleware('localization');
