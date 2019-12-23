@@ -44,7 +44,7 @@ class QueueController extends Controller
 
         return response()->json([
             'code' => 0,
-            'regions' => $reg
+            'services' => $reg
         ]);
     }
 
