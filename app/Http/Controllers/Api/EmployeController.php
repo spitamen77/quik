@@ -375,20 +375,29 @@ class EmployeController extends Controller
             ],200);
         }
         $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
-        $phn = Clients::create([
-            'mobile' => $new_phone,
-            'first_name' => ($request->first_name==null)?null:$request->first_name,
-            'last_name' => ($request->last_name==null)?null:$request->last_name,
-            'gender' => ($request->gender==null)?null:$request->gender,
-            'data_birthday' => ($request->birthday==null)?null:$request->birthday,
-            'language' => ($request->language==null)?null:$request->language,
-            'last_region' =>($request->region==null)?null: $request->region,
-        ]);
-        return response()->json([
-            'code' => 0,
-            'client_id' => $phn->id,
-            'message' => trans('lang.success')
-        ],201);
+        $pattern = "/^[8-9]{3}[0-9]{9}$/";
+        if (preg_match($pattern, $new_phone, $out)) {
+            $phn = Clients::create([
+                'mobile' => $new_phone,
+                'first_name' => ($request->first_name==null)?null:$request->first_name,
+                'last_name' => ($request->last_name==null)?null:$request->last_name,
+                'gender' => ($request->gender==null)?null:$request->gender,
+                'data_birthday' => ($request->birthday==null)?null:$request->birthday,
+                'language' => ($request->language==null)?null:$request->language,
+                'last_region' =>($request->region==null)?null: $request->region,
+            ]);
+            return response()->json([
+                'code' => 0,
+                'client_id' => $phn->id,
+                'message' => trans('lang.success')
+            ],201);
+        }else{
+            return response()->json([
+                'code' => 1,
+                'client_id' => null,
+                'message' => trans('lang.error')
+            ],200);
+        }
     }
 
     public function storeRegion(Request $request)

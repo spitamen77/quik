@@ -81,110 +81,128 @@ class ClientsController extends Controller
     public function getCode(Request $request)
     {
         $phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
-        $sms_code = ConfirmClient::where('mobile',$request->mobile)->where('code','=',$request->code)->first();
-        if (isset($sms_code)){
-            $user = Clients::where('mobile',$phone)->first();
-            if (isset($user)){
-                $sms_code->delete();
-                $token = JWTAuth::fromUser($user);
-                if (!$token) {
+        $pattern = "/^[8-9]{3}[0-9]{9}$/";
+        if (preg_match($pattern, $phone, $out)) {
+            $sms_code = ConfirmClient::where('mobile',$request->mobile)->where('code','=',$request->code)->first();
+            if (isset($sms_code)){
+                $user = Clients::where('mobile',$phone)->first();
+                if (isset($user)){
+                    $sms_code->delete();
+                    $token = JWTAuth::fromUser($user);
+                    if (!$token) {
+                        return response()->json([
+                            'code' => 1,
+                            'client' => (object)[],
+                            'message' => 'Error'
+                        ], 401);
+                    }
+                    $user->last_visit = time();
+                    $user->save();
+                    $date = $user->created_at;
+                    unset($user->last_visit,
+                        $user->updated_at,
+                        $user->last_region,
+                        $user->created_at
+                    );
+                    $user->reg_date = strtotime($date);
+                    $user->access_token=$token;
+                    $user->token_type='Bearer';
+                    $user->expires_at = auth()->factory()->getTTL() * 60;
                     return response()->json([
-                        'code' => 1,
-                        'client' => (object)[],
-                        'message' => 'Error'
-                    ], 401);
-                }
-                $user->last_visit = time();
-                $user->save();
-                $date = $user->created_at;
-                unset($user->last_visit,
-                    $user->updated_at,
-                    $user->last_region,
-                    $user->created_at
-                );
-                $user->reg_date = strtotime($date);
-                $user->access_token=$token;
-                $user->token_type='Bearer';
-                $user->expires_at = auth()->factory()->getTTL() * 60;
-                return response()->json([
-                    'code' => 0,
-                    'client' => $user,
-                    'message' => 'Success'
-                ], 200);
-            }else{
-                $phn = Clients::create([
-                    'mobile' => $phone,
-                    'photo'=>"/storage/client/default.png",
-                    'language'=>$request->lang,
-                    'registration_platform'=>$request->platform,
-                ]);
-                $sms_code->delete();
-                $user = Clients::where('mobile', $phone)->first();
-                $token = JWTAuth::fromUser($user);
-                if (!$token) {
-                    return response()->json([
-                        'code' => 1,
-                        'client' => (object)[],
-                        'message' => 'Error'
-                    ], 401);
-                }
+                        'code' => 0,
+                        'client' => $user,
+                        'message' => 'Success'
+                    ], 200);
+                }else{
+                    $phn = Clients::create([
+                        'mobile' => $phone,
+                        'photo'=>"/storage/client/default.png",
+                        'language'=>$request->lang,
+                        'registration_platform'=>$request->platform,
+                    ]);
+                    $sms_code->delete();
+                    $user = Clients::where('mobile', $phone)->first();
+                    $token = JWTAuth::fromUser($user);
+                    if (!$token) {
+                        return response()->json([
+                            'code' => 1,
+                            'client' => (object)[],
+                            'message' => 'Error'
+                        ], 401);
+                    }
 //            return response()->json(compact('userToken'));
-                $date = $user->created_at;
-                unset($user->last_visit,
-                    $user->updated_at,
-                    $user->last_region,
-                    $user->created_at
-                );
-                $user->reg_date = strtotime($date);
-                $user->access_token=$token;
-                $user->token_type='Bearer';
-                $user->expires_at = auth()->factory()->getTTL() * 60;
+                    $date = $user->created_at;
+                    unset($user->last_visit,
+                        $user->updated_at,
+                        $user->last_region,
+                        $user->created_at
+                    );
+                    $user->reg_date = strtotime($date);
+                    $user->access_token=$token;
+                    $user->token_type='Bearer';
+                    $user->expires_at = auth()->factory()->getTTL() * 60;
+                    return response()->json([
+                        'code' => 0,
+                        'client' => $user,
+                        'message' => 'Success'
+                    ], 200);
+                }
+            }else{
                 return response()->json([
-                    'code' => 0,
-                    'client' => $user,
-                    'message' => 'Success'
+                    'code' => 1,
+                    'client' => (object)[],
+                    'message' => trans('lang.wrong_code')
                 ], 200);
             }
         }else{
             return response()->json([
                 'code' => 1,
-                'client' => (object)[],
-                'message' => trans('lang.wrong_code')
+                'message' => trans('lang.wrong_phone')
             ], 200);
         }
+
     }
 
     public function changePhone(Request $request)
     {
         $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->new_phone);
         $old_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->old_phone);
-        $sms_code = ConfirmClient::where('mobile',$new_phone)->where('code','=',$request->code)->first();
-        if (isset($sms_code)){
-            $old = Clients::where('mobile', $old_phone)->first();
-            if (isset($old)){
-                $sms_code->delete();
-                $old->update([
-                    'mobile' => $new_phone,
-                ]);
-                return response()->json([
-                    'code' => 0,
-                    'client' => Clients::where('mobile', $new_phone)->first(),
-                    'message' => trans('lang.success')
-                ], 200);
+        $pattern = "/^[8-9]{3}[0-9]{9}$/";
+        if (preg_match($pattern, $new_phone, $out)) {
+            $sms_code = ConfirmClient::where('mobile',$new_phone)->where('code','=',$request->code)->first();
+            if (isset($sms_code)){
+                $old = Clients::where('mobile', $old_phone)->first();
+                if (isset($old)){
+                    $sms_code->delete();
+                    $old->update([
+                        'mobile' => $new_phone,
+                    ]);
+                    return response()->json([
+                        'code' => 0,
+                        'client' => Clients::where('mobile', $new_phone)->first(),
+                        'message' => trans('lang.success')
+                    ], 200);
+                }else{
+                    return response()->json([
+                        'code' => 1,
+                        'client' => (object)[],
+                        'message' => trans('lang.wrong_number')
+                    ], 200);
+                }
             }else{
                 return response()->json([
                     'code' => 1,
                     'client' => (object)[],
-                    'message' => trans('lang.wrong_number')
+                    'message' => trans('lang.wrong_code')
                 ], 200);
             }
         }else{
             return response()->json([
                 'code' => 1,
-                'client' => (object)[],
-                'message' => trans('lang.wrong_code')
+                'message' => trans('lang.wrong_phone')
             ], 200);
         }
+
     }
 
     public function update(Request $request)
