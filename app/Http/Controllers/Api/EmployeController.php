@@ -14,7 +14,6 @@ use App\Clients;
 use App\Employees;
 use App\models\ClientBlacklist;
 use App\models\Regions;
-use App\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

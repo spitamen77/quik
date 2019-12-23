@@ -68,6 +68,7 @@ Route::group([
 ], function () {
     Route::post('client', 'Api\ClientsController@createSms')->middleware('localization');
     Route::post('client/code', 'Api\ClientsController@getCode')->middleware('localization');
+    Route::get('services', 'Api\QueueController@showServices')->middleware('localization');
 
     Route::group([
         'middleware' => 'auth:client'
