@@ -25,5 +25,6 @@
        'add_note',
        'add_ban',
        'del_ban',
+       'duplicate',
    ];
 ?>

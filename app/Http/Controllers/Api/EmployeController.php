@@ -366,6 +366,14 @@ class EmployeController extends Controller
                 'message' => trans('lang.error')
             ],200);
         }
+        $client = Clients::where('mobile',$request->mobile)->first();
+        if (isset($client)){
+            return response()->json([
+                'code' => 1,
+                'client_id' => null,
+                'message' => trans('lang.duplicate')
+            ],200);
+        }
         $phn = ClientBlacklist::create([
             'mobile' => $request->mobile,
             'first_name' => ($request->first_name==null)?null:$request->first_name,
