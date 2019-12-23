@@ -251,7 +251,7 @@ class EmployeController extends Controller
     {
         $limit = $request->perpage;
         $offset = $request->page-1;
-        if (($limit==null) || ($offset==null)) {
+        if (($limit==null) && ($offset==null)) {
             $offset=0; $limit=50;
         }
 
@@ -274,7 +274,7 @@ class EmployeController extends Controller
                     ->orWhere('clients.last_name','LIKE', "%{$request->search}%");
             });
         }
-
+        $paginate = $list;
         $list = $list->orderBy('id', 'desc')
             ->skip($offset*$limit)->take($limit)
             ->get();
@@ -288,10 +288,14 @@ class EmployeController extends Controller
             else $item->block = null;
             $compa[] = $item;
         }
-
+        $pager = [];
+        $pager['currentPage']=$offset+1;
+        $pager['perpage']=$limit;
+        $pager['pagesCount']= $paginate->paginate($limit)->total();
         return response()->json([
             'code' => 0,
-            'clients' => $compa
+            'clients' => $compa,
+            'pager' => $pager
         ]);
 
     }
