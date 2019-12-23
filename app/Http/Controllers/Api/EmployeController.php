@@ -134,7 +134,8 @@ class EmployeController extends Controller
     public function list(Request $request)
     {
         $limit = $request->perpage;
-        $offset = $request->page-1;
+        if ($request->page==0) $offset=0;
+        else $offset = $request->page-1;
         if (($limit==null) && ($offset==null)) {
             $offset=0; $limit=50;
         }
@@ -146,9 +147,18 @@ class EmployeController extends Controller
                 ->skip($offset*$limit)->take($limit)
                 ->get()->toArray();
 
+            $pager = [];
+            $paginate = Employees::select('id', 'name','login','role','created_at')
+                ->where('role','!=' , 1)
+                ->orderBy('id', 'desc');
+            $pager['currentPage']=$offset+1;
+            $pager['perpage']=$limit;
+            $pager['total']= $paginate->paginate($limit)->total();
+
             return response()->json([
                 'code' => 0,
-                'employees' => $list
+                'employees' => $list,
+                'pager' =>$pager
             ]);
         }
     }
