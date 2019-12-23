@@ -13,9 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 //Route::group([
 //    'prefix' => 'auth'
@@ -50,6 +50,7 @@ Route::group([
             Route::get('refresh', 'Api\EmployeController@refresh')->middleware('localization');
             Route::delete('employee/{id}', 'Api\EmployeController@delete')->middleware('localization');
             Route::get('employee/{id}', 'Api\EmployeController@getUser')->middleware('localization');
+            Route::post('client', 'Api\EmployeController@storeClient')->middleware('localization');
             Route::get('client/{id}', 'Api\EmployeController@getClient')->middleware('localization');
             Route::get('clients', 'Api\EmployeController@getClients')->middleware('localization');
             Route::put('client/{id}', 'Api\EmployeController@updateClient')->middleware('localization'); //shu PUT bo`lishi kerak edi

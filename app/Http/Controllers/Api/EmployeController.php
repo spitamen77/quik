@@ -357,6 +357,31 @@ class EmployeController extends Controller
 
     }
 
+    public function storeClient(Request $request)
+    {
+        if ($request->mobile==null){
+            return response()->json([
+                'code' => 1,
+                'client_id' => null,
+                'message' => trans('lang.error')
+            ],200);
+        }
+        $phn = ClientBlacklist::create([
+            'mobile' => $request->mobile,
+            'first_name' => ($request->first_name==null)?null:$request->first_name,
+            'last_name' => ($request->last_name==null)?null:$request->last_name,
+            'gender' => ($request->gender==null)?null:$request->gender,
+            'data_birthday' => ($request->birthday==null)?null:$request->birthday,
+            'language' => ($request->language==null)?null:$request->language,
+            'last_region' =>($request->region==null)?null: $request->region,
+        ]);
+        return response()->json([
+            'code' => 0,
+            'client_id' => $phn->id,
+            'message' => trans('lang.success')
+        ],201);
+    }
+
     public function storeRegion(Request $request)
     {
         $phn = Regions::create([
