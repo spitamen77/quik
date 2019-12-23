@@ -25,7 +25,7 @@ class QueueController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:employee')->except(['index','login']);
+        $this->middleware('auth:employee')->except(['showServices','login']);
     }
 
     protected function guard()
