@@ -374,8 +374,9 @@ class EmployeController extends Controller
                 'message' => trans('lang.duplicate')
             ],200);
         }
-        $phn = ClientBlacklist::create([
-            'mobile' => $request->mobile,
+        $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
+        $phn = Clients::create([
+            'mobile' => $request->$new_phone,
             'first_name' => ($request->first_name==null)?null:$request->first_name,
             'last_name' => ($request->last_name==null)?null:$request->last_name,
             'gender' => ($request->gender==null)?null:$request->gender,
