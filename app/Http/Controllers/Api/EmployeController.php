@@ -135,7 +135,7 @@ class EmployeController extends Controller
     {
         $limit = $request->perpage;
         $offset = $request->page-1;
-        if (($limit==null) || ($offset==null)) {
+        if (($limit==null) && ($offset==null)) {
             $offset=0; $limit=50;
         }
 //        $user = Employees::where('id',Auth::user()->id)->first();
@@ -250,7 +250,8 @@ class EmployeController extends Controller
     public function getClients(Request $request)
     {
         $limit = $request->perpage;
-        $offset = $request->page-1;
+        if ($request->page==0) $offset=0;
+        else $offset = $request->page-1;
         if (($limit==null) && ($offset==null)) {
             $offset=0; $limit=50;
         }
