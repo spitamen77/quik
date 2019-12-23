@@ -292,7 +292,7 @@ class EmployeController extends Controller
         $pager = [];
         $pager['currentPage']=$offset+1;
         $pager['perpage']=$limit;
-        $pager['pagesCount']= $paginate->paginate($limit)->total();
+        $pager['total']= $paginate->paginate($limit)->total();
         return response()->json([
             'code' => 0,
             'clients' => $compa,
