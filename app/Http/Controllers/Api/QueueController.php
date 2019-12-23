@@ -36,10 +36,10 @@ class QueueController extends Controller
     public function showServices(Request $request)
     {
         if ($request->lang=='all'){
-            $reg = Service::all();
+            $reg = Service::orderBy('position', 'asc')->get();
         }else{
             $lang = $request->header('X-localization');
-            $reg = Service::select('id','name_'.$lang,'description_'.$lang,'position')->get();
+            $reg = Service::select('position','name_'.$lang,'description_'.$lang,'position')->orderBy('id', 'asc')->get();
         }
 
         return response()->json([
