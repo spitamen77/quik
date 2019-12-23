@@ -31,7 +31,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group([
     'prefix' => 'v1'
 ], function () {
-    Route::post('private/employee/login', 'Api\EmployeController@login')->middleware('localization');
+    Route::group([
+        'prefix' => 'private'
+    ], function () {
+        Route::post('employee/login', 'Api\EmployeController@login')->middleware('localization');
+    });
 
     Route::group([
         'middleware' => 'auth:employee'
