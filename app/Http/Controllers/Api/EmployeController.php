@@ -105,7 +105,7 @@ class EmployeController extends Controller
         return response()->json([
             'code' => 1,
             'message' => "Sizga mumkinmas"
-        ], 201);
+        ], 400);
     }
 
     public function update(Request $request)
@@ -172,18 +172,18 @@ class EmployeController extends Controller
                 return response()->json([
                     'code' => 0,
                     'message' => "success"
-                ]);
+                ],204);
             }else{
                 return response()->json([
                     'code' => 0,
                     'message' => "no delete"
-                ]);
+                ],400);
             }
         }
         return response()->json([
             'code' => 0,
             'message' => "no delete"
-        ]);
+        ],400);
     }
 
     public function getUser($id)
@@ -347,7 +347,7 @@ class EmployeController extends Controller
                         'code' => 0,
                         'user_image' => $user->photo,
                         'message' => trans('lang.del_ban')
-                    ]);
+                    ],204);
                 }
             }else return response()->json([
                 'code' => 1,
@@ -379,7 +379,7 @@ class EmployeController extends Controller
                 'code' => 1,
                 'client_id' => null,
                 'message' => trans('lang.error')
-            ],200);
+            ],400);
         }
         $client = Clients::where('mobile',$request->mobile)->first();
         if (isset($client)){
@@ -387,7 +387,7 @@ class EmployeController extends Controller
                 'code' => 1,
                 'client_id' => null,
                 'message' => trans('lang.duplicate')
-            ],200);
+            ],400);
         }
         $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
         $pattern = "/^[8-9]{3}[0-9]{9}$/";
@@ -411,7 +411,7 @@ class EmployeController extends Controller
                 'code' => 1,
                 'client_id' => null,
                 'message' => trans('lang.error')
-            ],200);
+            ],400);
         }
     }
 
@@ -456,7 +456,7 @@ class EmployeController extends Controller
             return response()->json([
                 'code' => 1,
                 'message' => trans('lang.no_object')
-            ]);
+            ],400);
         }
     }
 
@@ -504,7 +504,7 @@ class EmployeController extends Controller
             return response()->json([
                 'code' => 1,
                 'message' => 'Пароли не совпадают!'
-            ]);
+            ],400);
         }
     }
 
@@ -529,7 +529,7 @@ class EmployeController extends Controller
             return response()->json([
                 'code' => 1,
                 'message' => trans('lang.password_incorrect')
-            ]);
+            ],400);
         }
     }
 

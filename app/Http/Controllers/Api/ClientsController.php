@@ -72,7 +72,7 @@ class ClientsController extends Controller
             return response()->json([
                 'code' => 1,
                 'message' => trans('lang.wrong_phone')
-            ], 200);
+            ], 400);
         }
 
 
@@ -152,13 +152,13 @@ class ClientsController extends Controller
                     'code' => 1,
                     'client' => (object)[],
                     'message' => trans('lang.wrong_code')
-                ], 200);
+                ], 400);
             }
         }else{
             return response()->json([
                 'code' => 1,
                 'message' => trans('lang.wrong_phone')
-            ], 200);
+            ], 400);
         }
 
     }
