@@ -461,12 +461,9 @@ class EmployeController extends Controller
 
     public function showRegions(Request $request)
     {
-        if ($request->lang=='all'){
-            $reg = Regions::all();
-        }else{
-            $lang = $request->header('X-localization');
-            $reg = Regions::select('id','name_'.$lang,'coordinates')->get();
-        }
+
+        $reg = Regions::all();
+
 
         return response()->json([
             'code' => 0,
@@ -476,12 +473,9 @@ class EmployeController extends Controller
 
     public function getRegion(Request $request)
     {
-        if ($request->lang=='all'){
-            $reg = Regions::where('id',$request->id)->first();
-        }else{
-            $lang = $request->header('X-localization');
-            $reg = Regions::select('id','name_'.$lang,'coordinates')->where('id',$request->id)->first();
-        }
+
+        $reg = Regions::where('id',$request->id)->first();
+
         return response()->json([
             'code' => 0,
             'region' => $reg
