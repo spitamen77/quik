@@ -32,6 +32,4 @@ class Sms extends Model
         'text' =>'string',
         'status' =>'int'
     ];
-
-
 }
