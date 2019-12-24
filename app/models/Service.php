@@ -24,6 +24,7 @@ class Service extends Model
         'description_uz',
         'description_ru',
         'position',
+        'slug',
     ];
 
     protected $casts = [
@@ -32,6 +33,7 @@ class Service extends Model
         'description_uz' =>'string',
         'description_ru' =>'string',
         'position' =>'int',
+        'slug' =>'string',
     ];
 
 

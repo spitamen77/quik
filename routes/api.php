@@ -59,6 +59,10 @@ Route::group([
             Route::post('region', 'Api\EmployeController@storeRegion')->middleware('localization');
             Route::put('region/{id}', 'Api\EmployeController@updateRegion')->middleware('localization');
             Route::delete('region/{id}', 'Api\EmployeController@deleteRegion')->middleware('localization');
+            Route::get('carriers', 'Api\QueueController@getCarriers')->middleware('localization');
+            Route::get('carrier/{id}', 'Api\QueueController@showCarries')->middleware('localization');
+            Route::post('carrier', 'Api\QueueController@storeCarrier')->middleware('localization');
+            Route::put('carrier/{id}', 'Api\QueueController@updateCarrier')->middleware('localization');
         });
     });
 });
