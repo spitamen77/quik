@@ -89,40 +89,48 @@ class QueueController extends Controller
 
     public function storeCarrier(Request $request)
     {
-        if($request->transport_id=="create"){
-            $trans = Transports::create([
-                'mark_id' => $request->mark_id,
-                'model_id' => $request->model_id,
-                'number' => $request->number
-            ]);
-            $transport = $trans->id;
-        }else $transport = $request->transport_id;
+        $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
+        $pattern = "/^[8-9]{3}[0-9]{9}$/";
+        if (preg_match($pattern, $new_phone, $out)) {
+            if ($request->transport_id == "create") {
+                $trans = Transports::create([
+                    'mark_id' => $request->mark_id,
+                    'model_id' => $request->model_id,
+                    'number' => $request->number
+                ]);
+                $transport = $trans->id;
+            } else $transport = $request->transport_id;
 
-        $phn = Clients::create([
-            'mobile' => $request->mobile,
-            'first_name' => ($request->first_name==null)?null:$request->first_name,
-            'last_name' => ($request->last_name==null)?null:$request->last_name,
-            'region_id' =>($request->region_id==null)?null: $request->region_id,
-            'called'=>$request->called,
-            'middle_name'=>$request->middle_name,
-            'birth_day'=>$request->birth_day,
-            'passport_number'=>$request->passport_number,
-            'passport_date'=>$request->passport_date,
-            'passport_until'=>$request->passport_until,
-            'address'=>$request->address,
-            'license_number'=>$request->license_number,
-            'license_date'=>$request->license_date,
-            'license_until'=>$request->license_until,
-            'license_class'=>$request->license_class,
-            'phones'=>$request->phones,
-            'data_reg'=>time(),
-            'transport_id'=>$transport,
-        ]);
-        return response()->json([
-            'code' => 0,
-            'client_id' => $phn->id,
-            'message' => trans('lang.success')
-        ],201);
+            $phn = Carriers::create([
+                'mobile' => $new_phone,
+                'first_name' => ($request->first_name == null) ? null : $request->first_name,
+                'last_name' => ($request->last_name == null) ? null : $request->last_name,
+                'region_id' => ($request->region_id == null) ? null : $request->region_id,
+                'called' => $request->called,
+                'middle_name' => $request->middle_name,
+                'birth_day' => $request->birth_day,
+                'passport_number' => $request->passport_number,
+                'passport_date' => $request->passport_date,
+                'passport_until' => $request->passport_until,
+                'address' => $request->address,
+                'license_number' => $request->license_number,
+                'license_date' => $request->license_date,
+                'license_until' => $request->license_until,
+                'license_class' => $request->license_class,
+                'phones' => $request->phones,
+                'data_reg' => time(),
+                'transport_id' => $transport,
+            ]);
+            return response()->json([
+                'code' => 0,
+                'carrier_id' => $phn->id,
+                'message' => trans('lang.success')
+            ], 201);
+        }else return response()->json([
+            'code' => 1,
+            'carrier_id' => null,
+            'message' => trans('lang.error')
+        ],400);
     }
 
     public function showCarries($id)
