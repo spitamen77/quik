@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transports extends Model
 {
-    protected $table = 'transport';
+    protected $table = 'transports';
 
     public $timestamps = false;
 
