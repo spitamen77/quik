@@ -14,6 +14,8 @@ namespace App\Http\Controllers\Api;
 use App\Clients;
 use App\models\Carriers;
 use App\models\Service;
+use App\models\TransportMarks;
+use App\models\TransportModels;
 use App\models\Transports;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -89,13 +91,13 @@ class QueueController extends Controller
 
     public function storeCarrier(Request $request)
     {
-        $pozivnoy = Carriers::where('called',$request->called)->first();
+        $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
+        $pozivnoy = Carriers::where('called',$request->called)->orWhere('mobile',$new_phone)->first();
         if (isset($pozivnoy)) return response()->json([
             'code' => 1,
             'carrier_id' => null,
             'message' => trans('lang.duplicate')
         ],400);
-        $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
         $pattern = "/^[8-9]{3}[0-9]{9}$/";
         if (preg_match($pattern, $new_phone, $out)) {
             if ($request->transport_id == "create") {
@@ -177,5 +179,102 @@ class QueueController extends Controller
         ]);
     }
 
+    public function showTransports(Request $request)
+    {
+        $limit = $request->perpage;
+        if ($request->page==0) $offset=0;
+        else $offset = $request->page-1;
+        if (($limit==null) && ($offset==null)) {
+            $offset=0; $limit=50;
+        }
+        $list = Transports::select('id','mark_id','model_id','number');
+        if (isset($request->search)){
+            $list = $list->where(function ($query) use ($request) {
+                $query->orWhere('transport.number', 'LIKE', "%{$request->search}%");
+            });
+        }
+        $paginate = $list;
+        $list = $list->orderBy('id', 'desc')
+            ->skip($offset*$limit)->take($limit)
+            ->get();
+        $compa = [];
+        foreach ($list as $item){
+            $date = $item->created_at;
+            unset($item->created_at);
+            $item->reg_date = strtotime($date);
+            if ($item->block){}
+            else $item->block = null;
+            $compa[] = $item;
+        }
+        $pager = [];
+        $pager['currentPage']=$offset+1;
+        $pager['perpage']=$limit;
+        $pager['total']= $paginate->paginate($limit)->total();
+        return response()->json([
+            'code' => 0,
+            'transports' => $compa,
+            'pager' => $pager
+        ]);
+    }
 
+    public function getTransport($id)
+    {
+        $reg = Transports::where('id',$id)->first();
+        $trans=[];
+        $trans['id']=$reg->id;
+        $trans['mark']=$reg->marks->name;
+        $trans['model']=$reg->models->name;
+        $trans['number']=$reg->number;
+        return response()->json([
+        'code' => 0,
+        'transport' => $trans
+        ]);
+    }
+
+    public function storeTransport(Request $request)
+    {
+        $trans = Transports::create([
+            'mark_id' => $request->mark_id,
+            'model_id' => $request->model_id,
+            'number' => $request->number
+        ]);
+        return response()->json([
+            'code' => 0,
+            'transport_id' => $trans->id
+        ]);
+    }
+
+    public function updateTransport(Request $request)
+    {
+        $trans = Transports::find($request->id);
+        $trans->update([
+            'mark_id' => ($request->mark_id==null)?$trans->mark_id:$request->mark_id,
+            'model_id' => ($request->model_id==null)?null:$request->model_id,
+            'number' => ($request->number==null)?null:$request->number,
+        ]);
+        return response()->json([
+            'code' => 0,
+            'message' => trans('lang.success'),
+        ]);
+    }
+
+    public function getTransMarks()
+    {
+        $marks = TransportMarks::all();
+        return response()->json([
+            'code' => 0,
+            'marks' => $marks,
+        ]);
+    }
+
+    public function getTransModel(Request $request)
+    {
+        if ($request->mark!=null){
+            $model = TransportModels::where('mark_id',$request->mark)->get();
+            return response()->json([
+                'code' => 0,
+                'models' => $model,
+            ]);
+        }
+    }
 }

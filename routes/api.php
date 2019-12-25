@@ -63,6 +63,12 @@ Route::group([
             Route::get('carrier/{id}', 'Api\QueueController@showCarries')->middleware('localization');
             Route::post('carrier', 'Api\QueueController@storeCarrier')->middleware('localization');
             Route::put('carrier/{id}', 'Api\QueueController@updateCarrier')->middleware('localization');
+            Route::get('transports', 'Api\QueueController@showTransports')->middleware('localization');
+            Route::get('transport/{id}', 'Api\QueueController@getTransport')->middleware('localization');
+            Route::post('transport', 'Api\QueueController@storeTransport')->middleware('localization');
+            Route::put('transport/{id}', 'Api\QueueController@updateTransport')->middleware('localization');
+            Route::get('transport-marks', 'Api\QueueController@getTransMarks')->middleware('localization');
+            Route::get('transport-models', 'Api\QueueController@getTransModel')->middleware('localization');
         });
     });
 });
