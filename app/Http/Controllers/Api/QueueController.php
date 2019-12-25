@@ -89,6 +89,12 @@ class QueueController extends Controller
 
     public function storeCarrier(Request $request)
     {
+        $pozivnoy = Carriers::where('called',$request->called)->first();
+        if (isset($pozivnoy)) return response()->json([
+            'code' => 1,
+            'carrier_id' => null,
+            'message' => trans('lang.duplicate')
+        ],400);
         $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
         $pattern = "/^[8-9]{3}[0-9]{9}$/";
         if (preg_match($pattern, $new_phone, $out)) {
