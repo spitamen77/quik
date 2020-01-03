@@ -261,6 +261,7 @@ class ClientsController extends Controller
             $reg = Regions::select('id','name_ru','name_uz')->get();
         }else{
             $lang = $request->header('X-localization');
+            if (!$lang) $lang='ru';
             $reg = Regions::select('id','name_'.$lang)->get();
         }
         return response()->json([
@@ -275,6 +276,7 @@ class ClientsController extends Controller
             $reg = Regions::select('id','name_ru','name_uz','coordinates')->where('id',$request->id)->first();
         }else{
             $lang = $request->header('X-localization');
+            if (!$lang) $lang='ru';
             $reg = Regions::select('id','name_'.$lang,'coordinates')->where('id',$request->id)->first();
         }
         return response()->json([

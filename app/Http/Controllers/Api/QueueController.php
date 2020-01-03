@@ -39,6 +39,7 @@ class QueueController extends Controller
             $reg = Service::orderBy('position', 'asc')->get();
         }else{
             $lang = $request->header('X-localization');
+            if (!$lang) $lang='ru';
             $reg = Service::select('id','name_'.$lang,'description_'.$lang,'position')->orderBy('position', 'asc')->get();
         }
 

@@ -80,7 +80,7 @@ Route::group([
     Route::post('client/code', 'Api\ClientsController@getCode')->middleware('localization');
     Route::get('services', 'Api\QueueController@showServices')->middleware('localization');
     Route::get('regions', 'Api\ClientsController@showRegions')->middleware('localization');
-    Route::get('region/{id}', 'Api\ClientsController@getRegion')->middleware('localization');
+    Route::get('regions/{id}', 'Api\ClientsController@getRegion')->middleware('localization');
 
     Route::group([
         'middleware' => 'auth:client'
