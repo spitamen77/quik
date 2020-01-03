@@ -80,9 +80,11 @@ class EmployeController extends Controller
      */
     public function registration(Request $request)
     {
-//        $name = request('name');
-//        $email = request('email');
-//        $password = request('password');
+        $this->validate($request,[
+            'password' => 'required|min:4',
+            'login' => 'required',
+            'name' => 'required'
+        ]);
         if (Auth::user()->role==1){
             $mail = Employees::where('login',$request->login)->first();
             if (isset($mail)) return response()->json([

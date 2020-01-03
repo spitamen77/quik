@@ -43,13 +43,13 @@ Route::group([
         Route::group([
             'prefix' => 'private'
         ], function () {
-            Route::post('employee', 'Api\EmployeController@registration')->middleware('localization');
+            Route::post('employees', 'Api\EmployeController@registration')->middleware('localization');
             Route::post('employee/logout', 'Api\EmployeController@logout')->middleware('localization');
-            Route::put('employee/{id}', 'Api\EmployeController@update')->middleware('localization');
+            Route::put('employees/{id}', 'Api\EmployeController@update')->middleware('localization');
             Route::get('employees', 'Api\EmployeController@list')->middleware('localization');
             Route::get('refresh', 'Api\EmployeController@refresh')->middleware('localization');
-            Route::delete('employee/{id}', 'Api\EmployeController@delete')->middleware('localization');
-            Route::get('employee/{id}', 'Api\EmployeController@getUser')->middleware('localization');
+            Route::delete('employees/{id}', 'Api\EmployeController@delete')->middleware('localization');
+            Route::get('employees/{id}', 'Api\EmployeController@getUser')->middleware('localization');
             Route::post('client', 'Api\EmployeController@storeClient')->middleware('localization');
             Route::get('client/{id}', 'Api\EmployeController@getClient')->middleware('localization');
             Route::get('clients', 'Api\EmployeController@getClients')->middleware('localization');
