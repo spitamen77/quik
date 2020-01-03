@@ -79,6 +79,8 @@ Route::group([
     Route::post('client', 'Api\ClientsController@createSms')->middleware('localization');
     Route::post('client/code', 'Api\ClientsController@getCode')->middleware('localization');
     Route::get('services', 'Api\QueueController@showServices')->middleware('localization');
+    Route::get('regions', 'Api\ClientsController@showRegions')->middleware('localization');
+    Route::get('region/{id}', 'Api\ClientsController@getRegion')->middleware('localization');
 
     Route::group([
         'middleware' => 'auth:client'
@@ -89,8 +91,7 @@ Route::group([
         Route::get('client/{id}', 'Api\ClientsController@getClient')->middleware('localization');
         Route::put('client/{id}/change-phone', 'Api\ClientsController@changePhone')->middleware('localization');
         Route::get('refresh', 'Api\ClientsController@refresh')->middleware('localization');
-        Route::get('regions', 'Api\ClientsController@showRegions')->middleware('localization');
-        Route::get('region/{id}', 'Api\ClientsController@getRegion')->middleware('localization');
+
     });
 });
 

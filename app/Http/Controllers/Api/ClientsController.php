@@ -33,7 +33,7 @@ class ClientsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:client')->except(['createSms','login','getCode']);
+        $this->middleware('auth:client')->except(['createSms','login','getCode','showRegions','getRegion']);
     }
 
     protected function guard()

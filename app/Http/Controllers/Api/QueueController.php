@@ -193,6 +193,12 @@ class QueueController extends Controller
                 $query->orWhere('transport.number', 'LIKE', "%{$request->search}%");
             });
         }
+        if (isset($request->mark)){
+            $list = $list->where('mark_id',$request->mark);
+        }
+        if (isset($request->model)){
+            $list = $list->where('model_id',$request->model);
+        }
         $paginate = $list;
         $list = $list->orderBy('id', 'desc')
             ->skip($offset*$limit)->take($limit)
