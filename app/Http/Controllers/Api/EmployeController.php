@@ -82,13 +82,18 @@ class EmployeController extends Controller
     {
         $this->validate($request,[
             'password' => 'required|min:4',
-            'login' => 'required',
-            'name' => 'required'
-        ]);
+            'login' => 'required|string',
+            'name' => 'required|string'
+        ],
+            [
+                'password.required' => 'You have to choose the file!2',
+                'name.required' => 'You have to choose tewde ype of the file!'
+            ]);
         if (Auth::user()->role==1){
             $mail = Employees::where('login',$request->login)->first();
             if (isset($mail)) return response()->json([
-                'code' => 1,
+                'status' => 'error',
+                'errors'=>(object)[],
                 'message' => trans('lang.error_phone')
             ]);
 
@@ -99,12 +104,16 @@ class EmployeController extends Controller
             $user->save();
 
             return response()->json([
-                'code' => 0,
+                'status' => 'ok',
+                'result'=> [
+                    'id' => $user->id
+                ],
                 'message' => trans('lang.account')
             ], 201);
         }
         return response()->json([
-            'code' => 1,
+            'status' => 'error',
+            'errors'=> (object)[],
             'message' => "Sizga mumkinmas"
         ], 400);
     }
@@ -127,7 +136,7 @@ class EmployeController extends Controller
         }
 
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
             'message' => trans('lang.update_success')
         ]);
     }
@@ -157,9 +166,11 @@ class EmployeController extends Controller
             $pager['total']= $paginate->paginate($limit)->total();
 
             return response()->json([
-                'code' => 0,
-                'employees' => $list,
-                'pager' =>$pager
+                'status' => 'ok',
+                'result' =>[
+                    'employees' => $list,
+                    'pager' =>$pager
+                ]
             ]);
         }
     }
@@ -182,7 +193,7 @@ class EmployeController extends Controller
             }
         }
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
             'message' => "no delete"
         ],400);
     }
@@ -198,13 +209,17 @@ class EmployeController extends Controller
                 $user->reg_date = strtotime($date);
 
                 return response()->json([
-                    'code' => 0,
-                    'employee' => $user
+                    'status' => 'ok',
+                    'result' =>[
+                        'employee' => $user
+                    ]
                 ]);
             }else{
                 return response()->json([
-                    'code' => 0,
-                    'employee' => (object)[]
+                    'status' => 'ok',
+                    'result' =>[
+                        'employee' => (object)[]
+                        ]
                 ]);
             }
         }else {
@@ -215,8 +230,10 @@ class EmployeController extends Controller
             $user->reg_date = strtotime($date);
 
             return response()->json([
-                'code' => 0,
-                'employee' => $user
+                'status' => 'ok',
+                'result' =>[
+                    'employee' => $user
+                    ]
             ]);
         }
     }
@@ -235,24 +252,30 @@ class EmployeController extends Controller
             $block = ClientBlacklist::where('client_id',$id)->first();
             if (isset($block)){
                 return response()->json([
-                    'code' => 0,
-                    'client' => $user,
-                    'block' => 'yes',
-                    'note' => $block->note
+                    'status' => 'ok',
+                    'result' =>[
+                        'client' => $user,
+                        'block' => 'yes',
+                        'note' => $block->note
+                    ]
                 ]);
             }
             return response()->json([
-                'code' => 0,
-                'client' => $user,
-                'block' => 'no',
-                'note' => ''
+                'status' => 'ok',
+                'result' =>[
+                    'client' => $user,
+                    'block' => 'no',
+                    'note' => ''
+                ]
             ]);
         }else{
             return response()->json([
-                'code' => 0,
-                'client' => (object)[],
-                'block' => 'no',
-                'note' => ''
+                'status' => 'ok',
+                'result' =>[
+                    'client' => (object)[],
+                    'block' => 'no',
+                    'note' => ''
+                ]
             ]);
         }
 
@@ -305,9 +328,11 @@ class EmployeController extends Controller
         $pager['perpage']=$limit;
         $pager['total']= $paginate->paginate($limit)->total();
         return response()->json([
-            'code' => 0,
-            'clients' => $compa,
-            'pager' => $pager
+            'status' => 'ok',
+            'result' =>[
+                'clients' => $compa,
+                'pager' => $pager
+            ]
         ]);
 
     }
@@ -337,23 +362,29 @@ class EmployeController extends Controller
                         'created_at'=>time()
                     ]);
                     return response()->json([
-                        'code' => 1,
-                        'user_image' => $user->photo,
-                        'message' => trans('lang.add_ban')
+                        'status' => 'ok',
+                        'result' =>[
+                            'user_image' => $user->photo,
+                            'message' => trans('lang.add_ban')
+                            ]
                     ],201);
                 }else{
                     $ban = ClientBlacklist::find($request->id);
                     $ban->delete();
                     return response()->json([
-                        'code' => 0,
-                        'user_image' => $user->photo,
-                        'message' => trans('lang.del_ban')
+                        'status' => 'ok',
+                        'result' =>[
+                            'user_image' => $user->photo,
+                            'message' => trans('lang.del_ban')
+                            ]
                     ],204);
                 }
             }else return response()->json([
-                'code' => 1,
-                'user_image' => $user->photo,
-                'message' => trans('lang.add_note')
+                'status' => 'error',
+                'errors' =>[
+                    'user_image' => $user->photo,
+                    'message' => trans('lang.add_note')
+                    ]
             ],200);
         }
 
@@ -366,9 +397,11 @@ class EmployeController extends Controller
             $user->save();
         }
         return response()->json([
-            'code' => 0,
-            'user_image' => $user->photo,
-            'message' => trans('lang.update_success')
+            'status' => 'ok',
+            'result' =>[
+                'user_image' => $user->photo,
+                'message' => trans('lang.update_success')
+                ]
         ]);
 
     }
