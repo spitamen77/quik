@@ -50,23 +50,23 @@ Route::group([
             Route::get('refresh', 'Api\EmployeController@refresh')->middleware('localization');
             Route::delete('employees/{id}', 'Api\EmployeController@delete')->middleware('localization');
             Route::get('employees/{id}', 'Api\EmployeController@getUser')->middleware('localization');
-            Route::post('client', 'Api\EmployeController@storeClient')->middleware('localization');
-            Route::get('client/{id}', 'Api\EmployeController@getClient')->middleware('localization');
+            Route::post('clients', 'Api\EmployeController@storeClient')->middleware('localization');
+            Route::get('clients/{id}', 'Api\EmployeController@getClient')->middleware('localization');
             Route::get('clients', 'Api\EmployeController@getClients')->middleware('localization');
-            Route::put('client/{id}', 'Api\EmployeController@updateClient')->middleware('localization'); //shu PUT bo`lishi kerak edi
+            Route::put('clients/{id}', 'Api\EmployeController@updateClient')->middleware('localization'); //shu PUT bo`lishi kerak edi
             Route::get('regions', 'Api\EmployeController@showRegions')->middleware('localization');
-            Route::get('region/{id}', 'Api\EmployeController@getRegion')->middleware('localization');
-            Route::post('region', 'Api\EmployeController@storeRegion')->middleware('localization');
-            Route::put('region/{id}', 'Api\EmployeController@updateRegion')->middleware('localization');
-            Route::delete('region/{id}', 'Api\EmployeController@deleteRegion')->middleware('localization');
+            Route::get('regions/{id}', 'Api\EmployeController@getRegion')->middleware('localization');
+            Route::post('regions', 'Api\EmployeController@storeRegion')->middleware('localization');
+            Route::put('regions/{id}', 'Api\EmployeController@updateRegion')->middleware('localization');
+            Route::delete('regions/{id}', 'Api\EmployeController@deleteRegion')->middleware('localization');
             Route::get('carriers', 'Api\QueueController@getCarriers')->middleware('localization');
-            Route::get('carrier/{id}', 'Api\QueueController@showCarries')->middleware('localization');
-            Route::post('carrier', 'Api\QueueController@storeCarrier')->middleware('localization');
-            Route::put('carrier/{id}', 'Api\QueueController@updateCarrier')->middleware('localization');
+            Route::get('carriers/{id}', 'Api\QueueController@showCarries')->middleware('localization');
+            Route::post('carriers', 'Api\QueueController@storeCarrier')->middleware('localization');
+            Route::put('carriers/{id}', 'Api\QueueController@updateCarrier')->middleware('localization');
             Route::get('transports', 'Api\QueueController@showTransports')->middleware('localization');
-            Route::get('transport/{id}', 'Api\QueueController@getTransport')->middleware('localization');
-            Route::post('transport', 'Api\QueueController@storeTransport')->middleware('localization');
-            Route::put('transport/{id}', 'Api\QueueController@updateTransport')->middleware('localization');
+            Route::get('transports/{id}', 'Api\QueueController@getTransport')->middleware('localization');
+            Route::post('transports', 'Api\QueueController@storeTransport')->middleware('localization');
+            Route::put('transports/{id}', 'Api\QueueController@updateTransport')->middleware('localization');
             Route::get('transport-marks', 'Api\QueueController@getTransMarks')->middleware('localization');
             Route::get('transport-models', 'Api\QueueController@getTransModel')->middleware('localization');
         });

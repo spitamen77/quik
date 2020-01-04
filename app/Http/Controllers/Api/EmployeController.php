@@ -49,27 +49,26 @@ class EmployeController extends Controller
         if (! $token = $this->guard()->attempt($credentials)) {
 //            return response()->json(['error' => 'Unauthorized'], 401);
             return response()->json([
-                'user' =>(object)[],
-                'code' => 1,
-                'message' => 'Неверное телефон или пароль'
+                'status' => 'error',
+                'errors' =>[
+                    'code' => (object)[],
+                    'message' => 'Неверное телефон или пароль'
+                ]
             ], 401);
         }
         $body= $this->guard()->user();
-        $date = $body->created_at;
         unset($body->email_verified_at,
             $body->updated_at,
             $body->created_at
         );
-        $body->reg_date = strtotime($date);
         $body->access_token=$token;
         $body->token_type='Bearer';
         $body->expires_at = auth()->factory()->getTTL() * 60;
 
         return response()->json(
             [
-                'employee'=>$body,
-                'code' => 0,
-                'message' => trans('lang.success')
+                'status' => 'ok',
+                'result'=> $body,
             ]);
 
 //        return $this->respondWithToken($token);
@@ -93,8 +92,9 @@ class EmployeController extends Controller
             $mail = Employees::where('login',$request->login)->first();
             if (isset($mail)) return response()->json([
                 'status' => 'error',
-                'errors'=>(object)[],
-                'message' => trans('lang.error_phone')
+                'errors'=>[
+                    'code'=>(object)[],
+                'message' => trans('lang.error_phone')]
             ]);
 
             $user = new Employees();
@@ -113,8 +113,9 @@ class EmployeController extends Controller
         }
         return response()->json([
             'status' => 'error',
-            'errors'=> (object)[],
-            'message' => "Sizga mumkinmas"
+            'errors'=> [
+                'code'=>(object)[],
+                'message' => "Sizga mumkinmas"]
         ], 400);
     }
 
@@ -182,13 +183,15 @@ class EmployeController extends Controller
             if (isset($user)){
                 $user->delete();
                 return response()->json([
-                    'code' => 0,
+                    'status' => 'ok',
                     'message' => "success"
                 ],204);
             }else{
                 return response()->json([
-                    'code' => 0,
-                    'message' => "no delete"
+                    'status' => 'ok',
+                    'errors'=>[
+                        'code' => 1,
+                        'message' => "no delete"]
                 ],400);
             }
         }
@@ -410,17 +413,19 @@ class EmployeController extends Controller
     {
         if ($request->mobile==null){
             return response()->json([
-                'code' => 1,
+                'status' => 'error',
+                'errors' =>[
                 'client_id' => null,
-                'message' => trans('lang.error')
+                'message' => trans('lang.error')]
             ],400);
         }
         $client = Clients::where('mobile',$request->mobile)->first();
         if (isset($client)){
             return response()->json([
-                'code' => 1,
+                'status' => 'error',
+                'errors' =>[
                 'client_id' => null,
-                'message' => trans('lang.duplicate')
+                'message' => trans('lang.duplicate')]
             ],400);
         }
         $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
@@ -436,15 +441,17 @@ class EmployeController extends Controller
                 'last_region' =>($request->region==null)?null: $request->region,
             ]);
             return response()->json([
-                'code' => 0,
+                'status' => 'ok',
+                'result' =>[
                 'client_id' => $phn->id,
-                'message' => trans('lang.success')
+                'message' => trans('lang.success')]
             ],201);
         }else{
             return response()->json([
-                'code' => 1,
+                'status' => 'error',
+                'errors' =>[
                 'client_id' => null,
-                'message' => trans('lang.error')
+                'message' => trans('lang.error')]
             ],400);
         }
     }
@@ -457,9 +464,10 @@ class EmployeController extends Controller
             'coordinates'=>$request->coordinates
         ]);
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
+            'result' =>[
             'region_id' => $phn->id,
-            'message' => trans('lang.success')
+            'message' => trans('lang.success')]
         ],201);
     }
 
@@ -472,7 +480,7 @@ class EmployeController extends Controller
             'coordinates' => ($request->coordinates==null)?$user->coordinates:$request->coordinates,
         ]);
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
             'message' => trans('lang.success'),
         ]);
     }
@@ -483,12 +491,12 @@ class EmployeController extends Controller
         if (isset($user)){
             $user->delete();
             return response()->json([
-                'code' => 0,
+                'status' => 'ok',
                 'message' => trans('lang.success_delete'),
             ],204);
         }else{
             return response()->json([
-                'code' => 1,
+                'status' => 'error',
                 'message' => trans('lang.no_object')
             ],400);
         }
@@ -501,8 +509,8 @@ class EmployeController extends Controller
 
 
         return response()->json([
-            'code' => 0,
-            'regions' => $reg
+            'status' => 'ok',
+            'result' => $reg
         ]);
     }
 
@@ -512,8 +520,8 @@ class EmployeController extends Controller
         $reg = Regions::where('id',$request->id)->first();
 
         return response()->json([
-            'code' => 0,
-            'region' => $reg
+            'status' => 'ok',
+            'result' => $reg
         ]);
     }
 
@@ -525,12 +533,12 @@ class EmployeController extends Controller
         $user = Employees::find(Auth::user()->id);
         if(Hash::check($request->passwordold, $user->password)){
             return response()->json([
-                'code' => 0,
+                'status' => 'ok',
                 'message' => 'Пароль совпадают'
             ]);
         }else{
             return response()->json([
-                'code' => 1,
+                'status' => 'error',
                 'message' => 'Пароли не совпадают!'
             ],400);
         }
@@ -550,12 +558,12 @@ class EmployeController extends Controller
             $user->save();
 
             return response()->json([
-                'code' => 0,
+                'status' => 'ok',
                 'message' => trans('lang.password_correct')
             ]);
         }else{
             return response()->json([
-                'code' => 1,
+                'status' => 'error',
                 'message' => trans('lang.password_incorrect')
             ],400);
         }
@@ -570,7 +578,7 @@ class EmployeController extends Controller
     {
         auth()->logout();
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
             'message' => trans('lang.logout')
         ]);
 //        return response()->json(['message' => 'Successfully logged out']);
