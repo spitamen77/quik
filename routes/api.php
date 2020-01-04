@@ -34,7 +34,7 @@ Route::group([
     Route::group([
         'prefix' => 'private'
     ], function () {
-        Route::post('employees/login', 'Api\EmployeController@login')->middleware('localization');
+        Route::post('employees/auth', 'Api\EmployeController@login')->middleware('localization');
     });
 
     Route::group([
