@@ -65,12 +65,12 @@ class ClientsController extends Controller
             }
 
             return response()->json([
-                'code' => 0,
+                'status' => 'ok',
                 'message' => trans('lang.account')
             ], 200);
         }else{
             return response()->json([
-                'code' => 1,
+                'status' => 'error',
                 'message' => trans('lang.wrong_phone')
             ], 400);
         }
@@ -91,9 +91,10 @@ class ClientsController extends Controller
                     $token = JWTAuth::fromUser($user);
                     if (!$token) {
                         return response()->json([
-                            'code' => 1,
+                            'status' => 'error',
+                            'errors'=> [
                             'client' => (object)[],
-                            'message' => 'Error'
+                            'message' => 'Error']
                         ], 401);
                     }
                     $user->last_visit = time();
@@ -109,9 +110,10 @@ class ClientsController extends Controller
                     $user->token_type='Bearer';
                     $user->expires_at = auth()->factory()->getTTL() * 60;
                     return response()->json([
-                        'code' => 0,
+                        'status' => 'ok',
+                        'result'=>[
                         'client' => $user,
-                        'message' => 'Success'
+                        'message' => 'Success']
                     ], 200);
                 }else{
                     $phn = Clients::create([
@@ -125,9 +127,10 @@ class ClientsController extends Controller
                     $token = JWTAuth::fromUser($user);
                     if (!$token) {
                         return response()->json([
-                            'code' => 1,
+                            'status' => 'error',
+                            'errors'=> [
                             'client' => (object)[],
-                            'message' => 'Error'
+                            'message' => 'Error']
                         ], 401);
                     }
 //            return response()->json(compact('userToken'));
@@ -142,22 +145,26 @@ class ClientsController extends Controller
                     $user->token_type='Bearer';
                     $user->expires_at = auth()->factory()->getTTL() * 60;
                     return response()->json([
-                        'code' => 0,
+                        'status' => 'ok',
+                        'result'=>[
                         'client' => $user,
-                        'message' => 'Success'
+                        'message' => 'Success']
                     ], 200);
                 }
             }else{
                 return response()->json([
-                    'code' => 1,
+                    'status' => 'error',
+                    'errors'=> [
                     'client' => (object)[],
-                    'message' => trans('lang.wrong_code')
+                    'message' => trans('lang.wrong_code')]
                 ], 400);
             }
         }else{
             return response()->json([
-                'code' => 1,
-                'message' => trans('lang.wrong_phone')
+                'status' => 'error',
+                'errors'=> [
+                    'client'=>(object)[],
+                'message' => trans('lang.wrong_phone')]
             ], 400);
         }
 
@@ -178,28 +185,32 @@ class ClientsController extends Controller
                         'mobile' => $new_phone,
                     ]);
                     return response()->json([
-                        'code' => 0,
+                        'status' => 'ok',
+                        'result'=>[
                         'client' => Clients::where('mobile', $new_phone)->first(),
-                        'message' => trans('lang.success')
+                        'message' => trans('lang.success')]
                     ], 200);
                 }else{
                     return response()->json([
-                        'code' => 1,
+                        'status' => 'error',
+                        'errors'=> [
                         'client' => (object)[],
-                        'message' => trans('lang.wrong_number')
+                        'message' => trans('lang.wrong_number')]
                     ], 200);
                 }
             }else{
                 return response()->json([
-                    'code' => 1,
+                    'status' => 'error',
+                    'errors'=> [
                     'client' => (object)[],
-                    'message' => trans('lang.wrong_code')
+                    'message' => trans('lang.wrong_code')]
                 ], 200);
             }
         }else{
             return response()->json([
-                'code' => 1,
-                'message' => trans('lang.wrong_phone')
+                'status' => 'error',
+                'errors'=> [
+                'message' => trans('lang.wrong_phone')]
             ], 200);
         }
 
@@ -231,9 +242,10 @@ class ClientsController extends Controller
             $user->save();
         }
         return response()->json([
-            'code' => 0,
-            'user_image' => $user->photo,
-            'message' => trans('lang.update_success')
+            'status' => 'ok',
+            'result'=>[
+                'user_image' => $user->photo,
+                'message' => trans('lang.update_success')]
         ]);
 
     }
@@ -250,8 +262,8 @@ class ClientsController extends Controller
         $user->reg_date = strtotime($date);
 
         return response()->json([
-            'code' => 0,
-            'client' => $user,
+            'status' => 'ok',
+            'result' => $user,
         ]);
     }
 
@@ -265,8 +277,9 @@ class ClientsController extends Controller
             $reg = Regions::select('id','name_'.$lang)->get();
         }
         return response()->json([
-            'code' => 0,
-            'regions' => $reg
+            'status' => 'ok',
+            'result'=>[
+            'regions' => $reg]
         ]);
     }
 
@@ -280,8 +293,9 @@ class ClientsController extends Controller
             $reg = Regions::select('id','name_'.$lang,'coordinates')->where('id',$request->id)->first();
         }
         return response()->json([
-            'code' => 0,
-            'region' => $reg
+            'status' => 'ok',
+            'result'=>[
+            'region' => $reg]
         ]);
     }
 
@@ -294,7 +308,7 @@ class ClientsController extends Controller
     {
         auth()->logout();
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
             'message' => trans('lang.logout')
         ]);
 //        return response()->json(['message' => 'Successfully logged out']);

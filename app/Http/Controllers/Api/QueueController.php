@@ -44,8 +44,8 @@ class QueueController extends Controller
         }
 
         return response()->json([
-            'code' => 0,
-            'services' => $reg
+            'status' => 'ok',
+            'result' => $reg
         ]);
     }
 
@@ -84,9 +84,10 @@ class QueueController extends Controller
         $pager['perpage']=$limit;
         $pager['total']= $paginate->paginate($limit)->total();
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
+            'result'=>[
             'clients' => $compa,
-            'pager' => $pager
+            'pager' => $pager]
         ]);
     }
 
@@ -95,9 +96,10 @@ class QueueController extends Controller
         $new_phone = preg_replace('/\s|\+|-|@|#|&|%|$|=|_|:|;|!|\'|"|\(|\)/', '', $request->mobile);
         $pozivnoy = Carriers::where('called',$request->called)->orWhere('mobile',$new_phone)->first();
         if (isset($pozivnoy)) return response()->json([
-            'code' => 1,
+            'status' => 'error',
+            'errors'=>[
             'carrier_id' => null,
-            'message' => trans('lang.duplicate')
+            'message' => trans('lang.duplicate')]
         ],400);
         $pattern = "/^[8-9]{3}[0-9]{9}$/";
         if (preg_match($pattern, $new_phone, $out)) {
@@ -131,14 +133,16 @@ class QueueController extends Controller
                 'transport_id' => $transport,
             ]);
             return response()->json([
-                'code' => 0,
+                'status' => 'ok',
+                'result'=>[
                 'carrier_id' => $phn->id,
-                'message' => trans('lang.success')
+                'message' => trans('lang.success')]
             ], 201);
         }else return response()->json([
-            'code' => 1,
+            'status' => 'error',
+            'errors'=>[
             'carrier_id' => null,
-            'message' => trans('lang.error')
+            'message' => trans('lang.error')]
         ],400);
     }
 
@@ -147,8 +151,8 @@ class QueueController extends Controller
         $reg = Carriers::where('id',$id)->first();
 
         return response()->json([
-            'code' => 0,
-            'region' => $reg
+            'status' => 'ok',
+            'result'=> $reg
         ]);
     }
 
@@ -175,7 +179,7 @@ class QueueController extends Controller
             'transport_id'=>($request->transport_id==null)?$trans->transport_id:$request->transport_id,
         ]);
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
             'message' => trans('lang.success'),
         ]);
     }
@@ -218,9 +222,10 @@ class QueueController extends Controller
         $pager['perpage']=$limit;
         $pager['total']= $paginate->paginate($limit)->total();
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
+            'result'=>[
             'transports' => $compa,
-            'pager' => $pager
+            'pager' => $pager]
         ]);
     }
 
@@ -233,8 +238,8 @@ class QueueController extends Controller
         $trans['model']=$reg->models->name;
         $trans['number']=$reg->number;
         return response()->json([
-        'code' => 0,
-        'transport' => $trans
+            'status' => 'ok',
+            'result'=> $trans
         ]);
     }
 
@@ -246,8 +251,9 @@ class QueueController extends Controller
             'number' => $request->number
         ]);
         return response()->json([
-            'code' => 0,
-            'transport_id' => $trans->id
+            'status' => 'ok',
+            'result'=>[
+            'transport_id' => $trans->id]
         ]);
     }
 
@@ -260,7 +266,7 @@ class QueueController extends Controller
             'number' => ($request->number==null)?null:$request->number,
         ]);
         return response()->json([
-            'code' => 0,
+            'status' => 'ok',
             'message' => trans('lang.success'),
         ]);
     }
@@ -269,8 +275,9 @@ class QueueController extends Controller
     {
         $marks = TransportMarks::all();
         return response()->json([
-            'code' => 0,
-            'marks' => $marks,
+            'status' => 'ok',
+            'result'=>[
+            'marks' => $marks,]
         ]);
     }
 
@@ -279,8 +286,9 @@ class QueueController extends Controller
         if ($request->mark!=null){
             $model = TransportModels::where('mark_id',$request->mark)->get();
             return response()->json([
-                'code' => 0,
-                'models' => $model,
+                'status' => 'ok',
+                'result'=>[
+                'models' => $model,]
             ]);
         }
     }
